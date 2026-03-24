@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panadería Digital</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --tg-theme-bg-color: #ffffff;
+            --tg-theme-button-color: #e67e22;
+            --tg-theme-button-text-color: #ffffff;
+            --tg-theme-text-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background: var(--tg-theme-button-color);
+            color: white;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .container {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 90%;
+        }
+
+        .product-card {
+            background: #fdf2e9;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .product-card:active { transform: scale(0.95); }
+
+        .product-card i { font-size: 40px; color: #d35400; }
+
+        .price { font-weight: bold; color: #e67e22; display: block; margin: 10px 0; }
+
+        .btn-add {
+            background: var(--tg-theme-button-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #cart-status {
+            position: fixed;
+            bottom: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🍞 Panadería Central</h1>
+    <p>Bienvenido, <span id="user-name">Invitado</span></p>
+</header>
+
+<div class="container">
+    <div class="product-card">
+        <i class="fas fa-bread-slice"></i>
+        <h3>Croissant</h3>
+        <span class="price">$1.50</span>
+        <button class="btn-add" onclick="addToCart('Croissant', 1.50)">Agregar</button>
+    </div>
+    <div class="product-card">
+        <i class="fas fa-stroopwafel"></i>
+        <h3>Baguette</h3>
+        <span class="price">$2.00</span>
+        <button class="btn-add" onclick="addToCart('Baguette', 2.00)">Agregar</button>
+    </div>
+    <div class="product-card">
+        <i class="fas fa-cookie"></i>
+        <h3>Galleta XL</h3>
+        <span class="price">$0.75</span>
+        <button class="btn-add" onclick="addToCart('Galleta XL', 0.75)">Agregar</button>
+    </div>
+    <div class="product-card">
+        <i class="fas fa-birthday-cake"></i>
+        <h3>Muffin</h3>
+        <span class="price">$2.50</span>
+        <button class="btn-add" onclick="addToCart('Muffin', 2.50)">Agregar</button>
+    </div>
+</div>
+
+<div id="cart-status"></div>
+
+<script>
+    let tg = window.Telegram.WebApp;
+    let cart = [];
+
+    tg.expand(); // Expande la app a pantalla completa
+    
+    // Mostrar nombre del usuario de Telegram
+    if (tg.initDataUnsafe.user) {
+        document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
+    }
+
+    function addToCart(name, price) {
+        cart.push({name, price});
+        updateMainButton();
+        
+        const status = document.getElementById('cart-status');
+        status.style.display = 'block';
+        status.innerText = `Agregado: ${name}`;
+        setTimeout(() => { status.style.display = 'none'; }, 2000);
+    }
+
+    function updateMainButton() {
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        tg.MainButton.text = `PAGAR $${total.toFixed(2)}`;
+        tg.MainButton.show();
+    }
+
+    // Evento al presionar el botón principal de Telegram
+    tg.onEvent('mainButtonClicked', function() {
+        tg.sendData(JSON.stringify(cart)); // Envía el pedido al bot
+        tg.close();
+    });
+</script>
+
+</body>
+</html>
