@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Digital Bakery - $PAN Token</title>
+    <title>Yesman Bakery - $PAN Protocol</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -22,9 +22,11 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            -webkit-user-select: none; /* Evita que el usuario seleccione texto */
+            user-select: none;
         }
 
-        /* Pantalla de Carga */
+        /* Splash Screen */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg) url('portada.jpg') no-repeat center;
@@ -40,7 +42,6 @@
         header { padding: 30px 20px 10px; text-align: center; }
         .balance-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
         
-        /* Balance con 9 decimales */
         .balance-container {
             font-size: 2.2rem;
             font-weight: 800;
@@ -54,22 +55,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
-        /* La Moneda con el nombre token.jpg */
+        /* MONEDA PROFESIONAL (PNG Transparente) */
         .token-btn {
-            width: 280px;
-            height: 280px;
-            background: url('token.jpg') no-repeat center;
+            width: 290px;
+            height: 290px;
+            /* CAMBIADO A PNG */
+            background: url('token.png') no-repeat center;
             background-size: contain;
             border-radius: 50%;
             cursor: pointer;
-            transition: transform 0.05s;
-            filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.4));
-            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.05s, filter 0.1s;
+            /* Sombra suave y dorada que se adapta al modo oscuro */
+            filter: drop-shadow(0 15px 30px rgba(245, 158, 11, 0.4));
+            -webkit-tap-highlight-color: transparent; /* Evita el recuadro gris al tocar */
         }
 
-        .token-btn:active { transform: scale(0.92); }
+        .token-btn:active {
+            transform: scale(0.92);
+            filter: drop-shadow(0 10px 15px rgba(245, 158, 11, 0.2));
+        }
 
         .energy-section { padding: 20px; text-align: center; }
         .energy-bar { width: 85%; height: 12px; background: #1e293b; border-radius: 10px; margin: 10px auto; overflow: hidden; border: 1px solid #334155; }
@@ -81,14 +88,14 @@
             font-weight: bold;
             font-size: 1.4rem;
             pointer-events: none;
-            animation: floatUp 0.7s ease-out forwards;
-            text-shadow: 0 0 8px black;
+            animation: floatUp 0.8s ease-out forwards;
+            text-shadow: 0 0 10px black;
             z-index: 100;
         }
 
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-130px) scale(1.2); opacity: 0; }
+            100% { transform: translateY(-130px) scale(1.3); opacity: 0; }
         }
 
         footer {
@@ -107,15 +114,15 @@
 <body>
 
 <div id="loader">
-    <div style="color: white; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px;">MINANDO $PAN...</div>
+    <div style="color: white; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px;">SYNCING $PAN NETWORK...</div>
     <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
 </div>
 
 <div id="main-content">
     <header>
-        <div class="balance-label">Balance Total de $PAN</div>
+        <div class="balance-label">Yesman Bakery: Total $PAN Protocol</div>
         <div class="balance-container" id="balance">0.000000000</div>
-        <div style="font-size: 0.8rem; color: #4ade80; font-weight: bold;">• RED PRINCIPAL ACTIVA</div>
+        <div style="font-size: 0.8rem; color: #4ade80; font-weight: bold;">• LIVE MAINNET</div>
     </header>
 
     <div class="mining-section">
@@ -124,7 +131,7 @@
 
     <div class="energy-section">
         <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.85rem; font-weight: bold;">
-            <span>⚡ ENERGÍA</span>
+            <span>⚡ POWER ENERGY</span>
             <span id="energy-text">1000/1000</span>
         </div>
         <div class="energy-bar">
@@ -134,8 +141,8 @@
 
     <footer>
         <div class="nav-item active"><i class="fas fa-hammer"></i>MINAR</div>
-        <div class="nav-item" onclick="tg.showAlert('Próximamente: Cambia tus $PAN')"><i class="fas fa-exchange-alt"></i>SWAP</div>
-        <div class="nav-item" onclick="tg.showAlert('Gana $PAN invitando amigos')"><i class="fas fa-user-friends"></i>AMIGOS</div>
+        <div class="nav-item" onclick="tg.showAlert('Swap opening soon')"><i class="fas fa-exchange-alt"></i>SWAP</div>
+        <div class="nav-item" onclick="tg.showAlert('Invite friends link copied')"><i class="fas fa-user-friends"></i>AMIGOS</div>
     </footer>
 </div>
 
@@ -164,10 +171,14 @@
 
     const mineBtn = document.getElementById('mine-btn');
     
-    // Soporte para múltiples dedos (Multi-touch)
+    // Lógica Multi-touch limitada a 3 dedos
     mineBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        for(let i=0; i<e.changedTouches.length; i++) {
+        
+        // LIMITAMOS A MÁXIMO 3 DEDOS (e.changedTouches.length es el número de toques)
+        const numToques = Math.min(e.changedTouches.length, 3);
+        
+        for(let i=0; i < numToques; i++) {
             if (energy > 0) {
                 balance += clickValue;
                 energy -= 1;
@@ -192,12 +203,11 @@
     function showFloatingEffect(x, y) {
         const num = document.createElement('div');
         num.className = 'plus-number';
-        // Muestra el incremento en pantalla
         num.innerText = '+0.000000001'; 
         num.style.left = (x - 50) + 'px';
         num.style.top = (y - 50) + 'px';
         document.body.appendChild(num);
-        setTimeout(() => num.remove(), 700);
+        setTimeout(() => num.remove(), 750);
     }
 
     // Recuperar energía (2 puntos cada segundo)
