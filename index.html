@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Digital Bakery Group - Auto-Mining</title>
+    <title>Digital Bakery Group - Virtual Factory</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -17,6 +17,7 @@
             --success: #10b981;
             --accent: #8b5cf6;
             --gold: #facc15;
+            --diamond: #06b6d4;
         }
 
         body {
@@ -42,10 +43,17 @@
 
         header { padding: 10px 20px; text-align: center; }
         .app-title { font-size: 0.9rem; font-weight: 800; color: var(--primary); letter-spacing: 1.5px; text-transform: uppercase; }
-        .balance-container { font-size: 2.3rem; font-weight: 900; color: white; font-family: 'Courier New', monospace; margin: 10px 0; text-shadow: 0 0 15px rgba(245,158,11,0.5); }
+        .balance-container { font-size: 2.3rem; font-weight: 900; color: white; font-family: 'Courier New', monospace; margin: 5px 0; text-shadow: 0 0 15px rgba(245,158,11,0.5); }
         .pps-badge { font-size: 0.7rem; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px 12px; border-radius: 20px; font-weight: bold; }
 
-        /* Minado */
+        /* Minado y Panadería Virtual */
+        .bakery-display { 
+            background: rgba(30, 41, 59, 0.5); border-radius: 20px; margin: 10px 20px; padding: 10px;
+            display: flex; justify-content: center; gap: 10px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .bakery-item { font-size: 1.2rem; opacity: 0.3; transition: 0.3s; }
+        .bakery-item.active { opacity: 1; filter: drop-shadow(0 0 5px var(--primary)); }
+
         .mining-section { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
         .bread-btn { font-size: 150px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 30px rgba(245,158,11,0.4)); -webkit-tap-highlight-color: transparent; }
         .bread-btn:active { transform: scale(0.85); }
@@ -53,7 +61,7 @@
         .plus-number { position: absolute; color: var(--primary); font-weight: bold; font-size: 1.1rem; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 100; }
         @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-180px); opacity: 0; } }
 
-        /* Estilo Tarjetas General */
+        /* Tienda de Hornos ($PAN) */
         .item-card { 
             background: linear-gradient(145deg, #1e293b, #0f172a); 
             border-radius: 20px; margin: 10px 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.05);
@@ -62,10 +70,9 @@
         .item-info { flex: 1; }
         .item-info h4 { margin: 0; font-size: 0.95rem; }
         .item-info p { margin: 5px 0; font-size: 0.7rem; color: #94a3b8; }
-        .btn-buy { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.8rem; min-width: 80px; }
-        .btn-buy.locked { background: #334155; opacity: 0.6; }
+        .btn-buy { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
 
-        /* Inversión */
+        /* Inversión (USDT) */
         .invest-card { background: var(--card); border-radius: 20px; margin: 12px 15px; padding: 18px; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
         .btn-invest { background: var(--ton); color: white; border: none; padding: 12px; width: 100%; border-radius: 14px; font-weight: 800; cursor: pointer; margin-top: 10px; }
 
@@ -92,16 +99,24 @@
     
     <div id="view-mine" class="view active">
         <header>
-            <div class="app-title">Producción Manual</div>
+            <div class="app-title">Estación de Horneado</div>
             <div class="balance-container" id="balance">0.000000000</div>
             <div id="pps-display" class="pps-badge">+0.000000000 $PAN / s</div>
         </header>
+
+        <div class="bakery-display" id="bakery-status">
+            <span class="bakery-item" id="icon-casero">🏠</span>
+            <span class="bakery-item" id="icon-industrial">🏭</span>
+            <span class="bakery-item" id="icon-maestro">🌋</span>
+        </div>
+
         <div class="mining-section">
             <div class="bread-btn" id="mine-btn">🍞</div>
         </div>
+
         <div style="padding: 15px; text-align: center;">
             <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.7rem; font-weight: bold; color: #94a3b8; margin-bottom: 5px;">
-                <span>ENERGÍA DE MASA</span>
+                <span>ENERGÍA</span>
                 <span id="energy-text">1000/1000</span>
             </div>
             <div style="width: 85%; height: 6px; background: #1e293b; border-radius: 10px; margin: 0 auto; overflow: hidden;">
@@ -111,64 +126,61 @@
     </div>
 
     <div id="view-shop" class="view">
-        <header><div class="app-title">Maquinaria Industrial</div></header>
-        
+        <header><div class="app-title">Mejorar Producción</div></header>
         <div class="item-card">
             <div style="font-size: 2rem;">🏠</div>
-            <div class="item-info">
-                <h4>Horno Casero</h4>
-                <p>+0.000000010 $PAN / s</p>
-                <div style="font-size: 0.75rem; font-weight: bold; color: var(--primary);">Costo: 0.000005000 $PAN</div>
-            </div>
-            <button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 0.00000001)">COMPRAR</button>
+            <div class="item-info"><h4>Horno Casero</h4><p>+0.000000010/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.000005 $PAN</div></div>
+            <button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 0.00000001)">MEJORAR</button>
         </div>
-
         <div class="item-card">
             <div style="font-size: 2rem;">🏭</div>
-            <div class="item-info">
-                <h4>Horno Industrial</h4>
-                <p>+0.000000100 $PAN / s</p>
-                <div style="font-size: 0.75rem; font-weight: bold; color: var(--primary);">Costo: 0.000050000 $PAN</div>
-            </div>
-            <button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 0.0000001)">COMPRAR</button>
+            <div class="item-info"><h4>Horno Industrial</h4><p>+0.000000100/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.00005 $PAN</div></div>
+            <button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 0.0000001)">MEJORAR</button>
         </div>
-
         <div class="item-card">
             <div style="font-size: 2rem;">🌋</div>
-            <div class="item-info">
-                <h4>Horno Maestro</h4>
-                <p>+0.000001000 $PAN / s</p>
-                <div style="font-size: 0.75rem; font-weight: bold; color: var(--primary);">Costo: 0.000500000 $PAN</div>
-            </div>
-            <button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 0.000001)">COMPRAR</button>
-        </div>
-
-        <div id="stats" style="padding: 20px; font-size: 0.8rem; color: #64748b;">
-            Hornos activos: <span id="count-casero">0</span> caseros, <span id="count-industrial">0</span> industriales, <span id="count-maestro">0</span> maestros.
+            <div class="item-info"><h4>Horno Maestro</h4><p>+0.000001000/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.0005 $PAN</div></div>
+            <button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 0.000001)">MEJORAR</button>
         </div>
     </div>
 
     <div id="view-invest" class="view">
-        <header><div class="app-title">Crowdfunding Real</div></header>
+        <header><div class="app-title">Inversión Real</div></header>
         <div class="invest-card">
-            <div style="color: var(--success); font-weight: bold;">Pack Amasadora • 10 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR AHORA</button>
+            <div style="color: var(--success); font-weight: bold;">Pack Semilla • 1 USDT</div>
+            <button class="btn-invest" onclick="pagarConWallet(1)">INVERTIR</button>
+        </div>
+        <div class="invest-card">
+            <div style="color: var(--ton); font-weight: bold;">Pack Amasadora • 10 USDT</div>
+            <button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR</button>
         </div>
         <div class="invest-card">
             <div style="color: var(--accent); font-weight: bold;">Socio Mayoritario • 50 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(50)" style="background: var(--accent);">INVERTIR AHORA</button>
+            <button class="btn-invest" onclick="pagarConWallet(50)" style="background: var(--accent);">INVERTIR</button>
         </div>
         <div class="invest-card" style="border: 1px solid var(--gold);">
             <div style="color: var(--gold); font-weight: bold;">Inversor Industrial • 100 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(100)" style="background: var(--gold); color: black;">INVERTIR AHORA</button>
+            <button class="btn-invest" onclick="pagarConWallet(100)" style="background: var(--gold); color: black;">INVERTIR</button>
+        </div>
+        <div class="invest-card" style="border: 1px solid var(--diamond);">
+            <div style="color: var(--diamond); font-weight: bold;">Socio Fundador • 200 USDT</div>
+            <button class="btn-invest" onclick="pagarConWallet(200)" style="background: var(--diamond); color: black;">INVERTIR</button>
+        </div>
+        <div class="invest-card" style="border: 2px solid var(--accent);">
+            <div style="color: var(--accent); font-weight: bold;">Master Baker • 500 USDT</div>
+            <button class="btn-invest" onclick="pagarConWallet(500)" style="background: var(--accent);">INVERTIR</button>
+        </div>
+        <div class="invest-card" style="background: linear-gradient(to right, #facc15, #f59e0b);">
+            <div style="color: #000; font-weight: 900;">👑 LEGENDARY INVESTOR • 1000 USDT</div>
+            <button class="btn-invest" onclick="pagarConWallet(1000)" style="background: #000; color: #fff;">INVERTIR</button>
         </div>
     </div>
 
     <footer>
-        <div class="nav-item active" onclick="switchView('view-mine', this)"><i class="fas fa-hand-pointer"></i>MINAR</div>
-        <div class="nav-item" onclick="switchView('view-shop', this)"><i class="fas fa-fire"></i>HORNOS</div>
-        <div class="nav-item" onclick="switchView('view-invest', this)"><i class="fas fa-gem"></i>INVERTIR</div>
-        <div class="nav-item" onclick="tg.showAlert('Próximamente')"><i class="fas fa-users"></i>AMIGOS</div>
+        <div class="nav-item active" onclick="switchView('view-mine', this)"><i class="fas fa-bread-slice"></i>FACTORY</div>
+        <div class="nav-item" onclick="switchView('view-shop', this)"><i class="fas fa-tools"></i>EQUIPOS</div>
+        <div class="nav-item" onclick="switchView('view-invest', this)"><i class="fas fa-coins"></i>USDT</div>
+        <div class="nav-item" onclick="tg.showAlert('Próximamente')"><i class="fas fa-user-friends"></i>EQUIPO</div>
     </footer>
 </div>
 
@@ -176,8 +188,6 @@
     const tg = window.Telegram.WebApp;
     let balance = parseFloat(localStorage.getItem('pan_v5')) || 0;
     let energy = 1000;
-    
-    // DATOS DE HORNOS
     let pps = parseFloat(localStorage.getItem('pan_pps')) || 0;
     let hornos = JSON.parse(localStorage.getItem('pan_inventario')) || { casero: 0, industrial: 0, maestro: 0 };
 
@@ -191,7 +201,7 @@
     window.onload = () => {
         document.getElementById('progress').style.width = '100%';
         updateDisplay();
-        actualizarInventario();
+        actualizarPanaderia();
         setTimeout(() => {
             document.getElementById('loader').style.display = 'none';
             document.getElementById('main-content').style.display = 'flex';
@@ -204,24 +214,19 @@
             balance -= costo;
             hornos[tipo] += 1;
             pps += produccion;
-            
             localStorage.setItem('pan_v5', balance.toFixed(9));
             localStorage.setItem('pan_pps', pps.toFixed(9));
             localStorage.setItem('pan_inventario', JSON.stringify(hornos));
-            
             updateDisplay();
-            actualizarInventario();
+            actualizarPanaderia();
             tg.HapticFeedback.notificationOccurred('success');
-            tg.showAlert(`¡Horno ${tipo} comprado! Tu producción subió.`);
-        } else {
-            tg.showAlert("No tienes suficiente $PAN minado.");
-        }
+        } else { tg.showAlert("Falta $PAN minado."); }
     }
 
-    function actualizarInventario() {
-        document.getElementById('count-casero').innerText = hornos.casero;
-        document.getElementById('count-industrial').innerText = hornos.industrial;
-        document.getElementById('count-maestro').innerText = hornos.maestro;
+    function actualizarPanaderia() {
+        if(hornos.casero > 0) document.getElementById('icon-casero').classList.add('active');
+        if(hornos.industrial > 0) document.getElementById('icon-industrial').classList.add('active');
+        if(hornos.maestro > 0) document.getElementById('icon-maestro').classList.add('active');
     }
 
     function switchView(viewId, el) {
@@ -257,24 +262,19 @@
         document.getElementById('energy-fill').style.width = `${(energy/1000)*100}%`;
     }
 
-    // CICLO AUTOMÁTICO (Cada Segundo)
     setInterval(() => {
         if (energy < 1000) energy += 1;
-        if (pps > 0) {
-            balance += pps;
-            localStorage.setItem('pan_v5', balance.toFixed(9));
-        }
+        if (pps > 0) { balance += pps; localStorage.setItem('pan_v5', balance.toFixed(9)); }
         updateDisplay();
     }, 1000);
 
     async function pagarConWallet(monto) {
-        if (!tonConnectUI.connected) { tg.showAlert("Conecta tu Wallet."); return; }
+        if (!tonConnectUI.connected) { tg.showAlert("Conecta Wallet."); return; }
         const transaction = {
             validUntil: Math.floor(Date.now() / 1000) + 60,
             messages: [{ address: "UQCWJafwk-4iQJkxDjqaBD4NB4cBmswgGJVENe-HyCaO2FAV", amount: (monto * 1000000000).toString() }]
         };
-        try { await tonConnectUI.sendTransaction(transaction); tg.showAlert("Pago en proceso..."); } 
-        catch (e) { console.error(e); }
+        try { await tonConnectUI.sendTransaction(transaction); tg.showAlert("Pago enviado."); } catch (e) {}
     }
 </script>
 </body>
