@@ -19,6 +19,7 @@
             font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0; background-color: var(--bg); color: var(--text);
             overflow: hidden; display: flex; flex-direction: column; height: 100vh;
+            -webkit-user-select: none; user-select: none;
         }
 
         /* Splash Screen */
@@ -34,33 +35,46 @@
 
         #main-content { display: none; flex-direction: column; height: 100%; opacity: 0; transition: opacity 0.5s; }
 
-        /* Vistas */
         .view { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 100px; }
         .view.active { display: flex; }
 
         header { padding: 25px 20px; text-align: center; }
         .app-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); letter-spacing: 2px; }
-        .balance-container { font-size: 2.3rem; font-weight: 800; color: var(--primary); font-family: monospace; margin: 10px 0; }
+        .balance-container { font-size: 2.2rem; font-weight: 800; color: var(--primary); font-family: monospace; margin: 10px 0; }
 
-        /* Estilos Minado */
-        .mining-section { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .bread-btn { font-size: 160px; cursor: pointer; transition: transform 0.05s; filter: drop-shadow(0 0 20px rgba(245,158,11,0.3)); }
-        .bread-btn:active { transform: scale(0.9); }
+        /* Animación del Pan */
+        .mining-section { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
+        .bread-btn { 
+            font-size: 170px; cursor: pointer; 
+            transition: transform 0.05s; 
+            filter: drop-shadow(0 0 25px rgba(245,158,11,0.3));
+            user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+        .bread-btn:active { transform: scale(0.85) rotate(-3deg); }
 
-        /* Estilos Inversión */
+        /* Efecto Flotante +0.000...1 */
+        .plus-number {
+            position: absolute; color: #fbbf24; font-weight: bold; font-size: 1.2rem;
+            pointer-events: none; animation: floatUp 0.8s ease-out forwards;
+            text-shadow: 0 0 8px black; z-index: 100;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-150px) scale(1.2); opacity: 0; }
+        }
+
+        /* Estilos Inversión USDT */
         .invest-card {
             background: var(--card); border-radius: 20px; margin: 15px; padding: 20px;
-            border: 1px solid #334155; position: relative; overflow: hidden;
+            border: 1px solid #334155;
         }
-        .invest-card h3 { margin: 0 0 10px 0; color: var(--primary); }
-        .invest-price { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; display: block; }
+        .invest-card h3 { margin: 0 0 5px 0; color: var(--primary); }
+        .invest-price { font-size: 1.4rem; font-weight: bold; color: var(--success); display: block; margin-bottom: 10px; }
         .btn-invest {
-            background: var(--success); color: white; border: none; padding: 12px;
-            width: 100%; border-radius: 12px; font-weight: bold; text-transform: uppercase;
+            background: #26a17b; color: white; border: none; padding: 12px;
+            width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer;
         }
-        .crowdfund-info { padding: 20px; background: rgba(245, 158, 11, 0.1); border-radius: 15px; margin: 15px; font-size: 0.9rem; border-left: 4px solid var(--primary); }
 
-        /* Barra de Energía */
         .energy-bar-container { padding: 20px; text-align: center; }
         .energy-bar { width: 85%; height: 12px; background: #1e293b; border-radius: 10px; margin: 10px auto; overflow: hidden; }
         .energy-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); width: 100%; transition: width 0.2s; }
@@ -69,7 +83,7 @@
             position: fixed; bottom: 0; width: 100%; background: #0f172a;
             padding: 15px 0; display: flex; justify-content: space-around; border-top: 1px solid #1e293b;
         }
-        .nav-item { color: #64748b; text-align: center; font-size: 0.75rem; flex: 1; cursor: pointer; }
+        .nav-item { color: #64748b; text-align: center; font-size: 0.75rem; flex: 1; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { display: block; font-size: 1.4rem; margin-bottom: 4px; }
     </style>
@@ -77,22 +91,23 @@
 <body>
 
 <div id="loader">
-    <div style="color: white; margin-bottom: 15px; font-weight: bold;">PREPARANDO EL HORNO...</div>
+    <div style="color: white; margin-bottom: 15px; font-weight: bold;">CONECTANDO A LA RED $PAN...</div>
     <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
 </div>
 
 <div id="main-content">
+    
     <div id="view-mine" class="view active">
         <header>
             <div class="app-title">Digital Bakery Group</div>
-            <div style="font-size: 0.8rem; color: #94a3b8;">Tu Balance de $PAN</div>
+            <div style="font-size: 0.8rem; color: #94a3b8;">Balance de Minado</div>
             <div class="balance-container" id="balance">0.000000000</div>
         </header>
         <div class="mining-section">
             <div class="bread-btn" id="mine-btn">🍞</div>
         </div>
         <div class="energy-bar-container">
-            <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.8rem;">
+            <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.8rem; font-weight: bold;">
                 <span>⚡ ENERGÍA</span>
                 <span id="energy-text">1000/1000</span>
             </div>
@@ -102,34 +117,30 @@
 
     <div id="view-invest" class="view">
         <header>
-            <div class="app-title">Socio Inversor</div>
-            <p style="font-size: 0.85rem; color: #94a3b8; padding: 0 10px;">Tu inversión financia nuestra panadería física. ¡Crece con nosotros!</p>
+            <div class="app-title">Inversión Real</div>
+            <p style="font-size: 0.8rem; color: #94a3b8;">Tu inversión en USDT financia nuestra panadería física.</p>
         </header>
 
-        <div class="crowdfund-info">
-            <strong>Objetivo:</strong> Compra de Amasadora Industrial.<br>
-            <em>El $PAN tendrá valor real respaldado por activos físicos.</em>
+        <div style="margin: 0 15px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px dashed var(--success); font-size: 0.85rem; text-align: center;">
+            <i class="fas fa-shield-alt"></i> Pagos seguros vía USDT (Cualquier red descentralizada)
         </div>
 
         <div class="invest-card">
             <h3>Pack Semilla 🌾</h3>
-            <span class="invest-price">$1.00 USD</span>
-            <p style="font-size: 0.8rem; margin-bottom: 15px;">Recibes: 0.001 $PAN + Multiplicador x2 por 24h.</p>
-            <button class="btn-invest" onclick="iniciarPago(1)">Invertir 1 USD</button>
+            <span class="invest-price">1 USDT</span>
+            <button class="btn-invest" onclick="iniciarPago(1)">Invertir 1 USDT</button>
         </div>
 
         <div class="invest-card">
-            <h3>Pack Horno 🥖</h3>
-            <span class="invest-price">$10.00 USD</span>
-            <p style="font-size: 0.8rem; margin-bottom: 15px;">Recibes: 0.015 $PAN + Minado Automático (1 mes).</p>
-            <button class="btn-invest" onclick="iniciarPago(10)">Invertir 10 USD</button>
+            <h3>Pack Amasadora 🥯</h3>
+            <span class="invest-price">10 USDT</span>
+            <button class="btn-invest" onclick="iniciarPago(10)">Invertir 10 USDT</button>
         </div>
 
-        <div class="invest-card" style="border-color: var(--primary);">
-            <h3>Socio Fundador 💎</h3>
-            <span class="invest-price">$50.00 USD</span>
-            <p style="font-size: 0.8rem; margin-bottom: 15px;">Beneficios en la tienda física + Participación en decisiones.</p>
-            <button class="btn-invest" onclick="iniciarPago(50)" style="background: var(--primary);">Invertir 50 USD</button>
+        <div class="invest-card">
+            <h3>Socio Mayoritario 💎</h3>
+            <span class="invest-price">50 USDT</span>
+            <button class="btn-invest" onclick="iniciarPago(50)">Invertir 50 USDT</button>
         </div>
     </div>
 
@@ -138,9 +149,9 @@
             <i class="fas fa-hand-pointer"></i>MINAR
         </div>
         <div class="nav-item" onclick="switchView('view-invest', this)">
-            <i class="fas fa-hand-holding-usd"></i>INVERTIR
+            <i class="fas fa-wallet"></i>INVERTIR
         </div>
-        <div class="nav-item" onclick="tg.showAlert('Próximamente: Sistema de Referidos')">
+        <div class="nav-item" onclick="tg.showAlert('Comunidad próximamente')">
             <i class="fas fa-users"></i>AMIGOS
         </div>
     </footer>
@@ -148,15 +159,13 @@
 
 <script>
     let tg = window.Telegram.WebApp;
-    let balance = parseFloat(localStorage.getItem('pan_v4')) || 0.000000000;
+    let balance = parseFloat(localStorage.getItem('pan_v4')) || 0;
     let energy = 1000;
     const maxEnergy = 1000;
     const clickValue = 0.000000001;
 
     tg.expand();
-    tg.ready();
 
-    // Loader
     window.onload = () => {
         document.getElementById('progress').style.width = '100%';
         updateDisplay();
@@ -167,7 +176,6 @@
         }, 2000);
     };
 
-    // Navegación
     function switchView(viewId, el) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -176,14 +184,19 @@
         tg.HapticFeedback.impactOccurred('light');
     }
 
-    // Minado (Máximo 3 dedos)
-    document.getElementById('mine-btn').addEventListener('touchstart', (e) => {
+    // Minado con Efectos (Máx 3 dedos)
+    const mineBtn = document.getElementById('mine-btn');
+    mineBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const touches = Math.min(e.changedTouches.length, 3);
         for(let i=0; i<touches; i++) {
             if (energy > 0) {
                 balance += clickValue;
                 energy -= 1;
+                
+                // Crear número flotante
+                const touch = e.changedTouches[i];
+                createPlusOne(touch.clientX, touch.clientY);
                 tg.HapticFeedback.impactOccurred('medium');
             }
         }
@@ -191,24 +204,31 @@
         localStorage.setItem('pan_v4', balance.toFixed(9));
     });
 
+    function createPlusOne(x, y) {
+        const p = document.createElement('div');
+        p.className = 'plus-number';
+        p.innerText = '+0.000000001';
+        p.style.left = (x - 60) + 'px';
+        p.style.top = (y - 50) + 'px';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+    }
+
     function updateDisplay() {
         document.getElementById('balance').innerText = balance.toFixed(9);
         document.getElementById('energy-text').innerText = `${energy}/${maxEnergy}`;
         document.getElementById('energy-fill').style.width = `${(energy/maxEnergy)*100}%`;
     }
 
-    // Lógica de Pago
     function iniciarPago(monto) {
-        tg.showConfirm(`¿Deseas invertir $${monto} USD en Digital Bakery Group?`, (ok) => {
+        tg.showConfirm(`¿Confirmas la inversión de ${monto} USDT?`, (ok) => {
             if (ok) {
-                // Aquí se envía la señal al bot para crear la factura
-                tg.sendData(JSON.stringify({action: "invest", amount: monto}));
-                tg.showAlert("Solicitud de inversión enviada. El bot te contactará con los detalles del pago.");
+                tg.sendData(JSON.stringify({action: "invest", amount: monto, currency: "USDT"}));
+                tg.showAlert(`¡Excelente! El bot te enviará ahora la dirección de billetera para depositar tus ${monto} USDT.`);
             }
         });
     }
 
-    // Recuperar energía
     setInterval(() => { if (energy < maxEnergy) { energy += 1; updateDisplay(); } }, 1000);
 </script>
 </body>
