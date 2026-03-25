@@ -6,9 +6,10 @@
     <title>Digital Bakery Group App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
-            --tg-theme-bg-color: #0f172a;
+            --tg-theme-bg-color: #020617;
             --tg-theme-button-color: #f59e0b;
             --tg-theme-text-color: #f8fafc;
         }
@@ -18,13 +19,14 @@
             margin: 0;
             background-color: #020617;
             color: var(--tg-theme-text-color);
-            overflow: hidden; /* Evita scroll mientras carga */
+            overflow: hidden;
         }
 
-        /* PANTALLA DE CARGA (SPLASH SCREEN) */
+        /* PANTALLA DE CARGA MEJORADA */
         #loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
+            /* Esta línea ahora busca la imagen en la misma carpeta automáticamente */
             background: #020617 url('Lanzamiento digital para proyectos innovadores.jpg') no-repeat center;
             background-size: cover;
             z-index: 9999;
@@ -32,33 +34,42 @@
             flex-direction: column;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 50px;
+            padding-bottom: 80px;
+        }
+
+        #loader::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
         }
 
         .loader-bar {
             width: 70%;
-            height: 4px;
-            background: rgba(255,255,255,0.2);
+            height: 6px;
+            background: rgba(255,255,255,0.1);
             border-radius: 10px;
             overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .loader-progress {
             width: 0%;
             height: 100%;
-            background: var(--tg-theme-button-color);
-            transition: width 2s linear;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            box-shadow: 0 0 15px #f59e0b;
+            transition: width 2s cubic-bezier(0.1, 0, 0.2, 1);
         }
 
-        /* CONTENIDO PRINCIPAL (Oculto al inicio) */
         #main-content {
             display: none;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s ease-in;
         }
 
         header {
-            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
                              url('Lanzamiento digital para proyectos innovadores.jpg');
             background-size: cover;
             background-position: center;
@@ -72,10 +83,10 @@
 
         .user-welcome {
             background: rgba(245, 158, 11, 0.9);
-            padding: 5px 15px;
+            padding: 6px 18px;
             border-radius: 20px;
             font-size: 0.9rem;
-            margin-top: 10px;
+            margin-top: 12px;
             font-weight: bold;
             color: white;
         }
@@ -83,19 +94,19 @@
         .container { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .product-card { background: #1e293b; border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #334155; }
         .product-card i { font-size: 35px; color: #f59e0b; }
-        .price { display: block; color: #fbbf24; font-weight: bold; margin: 10px 0; }
-        .btn-add { background: var(--tg-theme-button-color); color: white; border: none; padding: 10px 0; width: 100%; border-radius: 8px; font-weight: bold; }
+        .price { display: block; color: #fbbf24; font-weight: bold; margin: 10px 0; font-size: 1.1rem; }
+        .btn-add { background: var(--tg-theme-button-color); color: white; border: none; padding: 12px 0; width: 100%; border-radius: 10px; font-weight: bold; }
 
         #cart-status {
             position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            background: #10b981; color: white; padding: 10px 25px; border-radius: 50px; display: none;
+            background: #10b981; color: white; padding: 12px 30px; border-radius: 50px; display: none; z-index: 1000;
         }
     </style>
 </head>
 <body>
 
 <div id="loader">
-    <div style="color: white; margin-bottom: 15px; font-weight: bold; text-shadow: 2px 2px 4px black;">CARGANDO...</div>
+    <div style="color: white; margin-bottom: 15px; font-weight: bold; text-shadow: 2px 2px 5px black; letter-spacing: 2px;">INICIANDO...</div>
     <div class="loader-bar">
         <div class="loader-progress" id="progress"></div>
     </div>
@@ -103,8 +114,8 @@
 
 <div id="main-content">
     <header>
-        <h1 style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Digital Bakery</h1>
-        <div class="user-welcome">Hola, <span id="user-name">Usuario</span> 🚀</div>
+        <h1 style="text-shadow: 2px 2px 10px rgba(0,0,0,1); color: white; margin: 0;">Digital Bakery</h1>
+        <div class="user-welcome">Hola, <span id="user-name">Invitado</span> 🚀</div>
     </header>
 
     <div class="container">
@@ -143,19 +154,21 @@
 
     tg.expand();
 
-    // Lógica del Loader
     window.onload = function() {
         const progress = document.getElementById('progress');
-        progress.style.width = '100%'; // Inicia la barra
+        setTimeout(() => { progress.style.width = '100%'; }, 100);
         
         setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('loader').style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('main-content').style.opacity = '1';
-                document.body.style.overflow = 'auto';
-            }, 50);
-        }, 2500); // Duración de la carga: 2.5 segundos
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('main-content').style.opacity = '1';
+                    document.body.style.overflow = 'auto';
+                }, 50);
+            }, 500);
+        }, 2600); 
     };
 
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
