@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -192,13 +192,4 @@
 
         try {
             await tonConnectUI.sendTransaction(transaction);
-            tg.showAlert("¡Transacción enviada con éxito!");
-        } catch (e) {
-            tg.showAlert("Error en la transacción.");
-        }
-    }
-
-    setInterval(() => { if (energy < 1000) { energy += 1; updateDisplay(); } }, 1000);
-</script>
-</body>
-</html>
+            tg.showAlert
