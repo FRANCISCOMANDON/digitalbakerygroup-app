@@ -20,6 +20,7 @@
             margin: 0; background-color: var(--bg); color: var(--text);
             overflow: hidden; display: flex; flex-direction: column; height: 100vh;
             -webkit-user-select: none; user-select: none;
+            touch-action: manipulation;
         }
 
         /* Splash Screen */
@@ -42,15 +43,34 @@
         .app-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); letter-spacing: 2px; }
         .balance-container { font-size: 2.2rem; font-weight: 800; color: var(--primary); font-family: monospace; margin: 10px 0; }
 
-        /* Animación del Pan */
-        .mining-section { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        .bread-btn { 
-            font-size: 170px; cursor: pointer; 
-            transition: transform 0.05s; 
-            filter: drop-shadow(0 0 25px rgba(245,158,11,0.3));
-            user-select: none; -webkit-tap-highlight-color: transparent;
+        /* SECCIÓN DE MINADO Y ANIMACIÓN DEL PAN */
+        .mining-section { 
+            flex: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative;
+            perspective: 1000px;
         }
-        .bread-btn:active { transform: scale(0.85) rotate(-3deg); }
+
+        .bread-container {
+            display: inline-block;
+            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .bread-btn { 
+            font-size: 170px; 
+            filter: drop-shadow(0 0 25px rgba(245,158,11,0.3));
+            user-select: none;
+            display: block;
+        }
+
+        /* Clase que activaremos con JavaScript para el movimiento */
+        .bread-active {
+            transform: scale(0.8) rotate(-5deg) !important;
+        }
 
         /* Efecto Flotante +0.000...1 */
         .plus-number {
@@ -60,7 +80,7 @@
         }
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-150px) scale(1.2); opacity: 0; }
+            100% { transform: translateY(-160px) scale(1.4); opacity: 0; }
         }
 
         /* Estilos Inversión USDT */
@@ -104,7 +124,9 @@
             <div class="balance-container" id="balance">0.000000000</div>
         </header>
         <div class="mining-section">
-            <div class="bread-btn" id="mine-btn">🍞</div>
+            <div class="bread-container" id="bread-container">
+                <div class="bread-btn">🍞</div>
+            </div>
         </div>
         <div class="energy-bar-container">
             <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.8rem; font-weight: bold;">
@@ -122,7 +144,7 @@
         </header>
 
         <div style="margin: 0 15px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px dashed var(--success); font-size: 0.85rem; text-align: center;">
-            <i class="fas fa-shield-alt"></i> Pagos seguros vía USDT (Cualquier red descentralizada)
+            <i class="fas fa-shield-alt"></i> Pagos seguros vía USDT (Cualquier red)
         </div>
 
         <div class="invest-card">
@@ -184,17 +206,21 @@
         tg.HapticFeedback.impactOccurred('light');
     }
 
-    // Minado con Efectos (Máx 3 dedos)
-    const mineBtn = document.getElementById('mine-btn');
-    mineBtn.addEventListener('touchstart', (e) => {
+    // LÓGICA DE MOVIMIENTO CORREGIDA
+    const breadContainer = document.getElementById('bread-container');
+    
+    breadContainer.addEventListener('touchstart', (e) => {
         e.preventDefault();
+        
+        // Añadir clase de animación
+        breadContainer.classList.add('bread-active');
+        
         const touches = Math.min(e.changedTouches.length, 3);
         for(let i=0; i<touches; i++) {
             if (energy > 0) {
                 balance += clickValue;
                 energy -= 1;
                 
-                // Crear número flotante
                 const touch = e.changedTouches[i];
                 createPlusOne(touch.clientX, touch.clientY);
                 tg.HapticFeedback.impactOccurred('medium');
@@ -202,6 +228,11 @@
         }
         updateDisplay();
         localStorage.setItem('pan_v4', balance.toFixed(9));
+
+        // Quitar la animación después de un momento para que pueda volver a ocurrir
+        setTimeout(() => {
+            breadContainer.classList.remove('bread-active');
+        }, 80);
     });
 
     function createPlusOne(x, y) {
@@ -224,7 +255,7 @@
         tg.showConfirm(`¿Confirmas la inversión de ${monto} USDT?`, (ok) => {
             if (ok) {
                 tg.sendData(JSON.stringify({action: "invest", amount: monto, currency: "USDT"}));
-                tg.showAlert(`¡Excelente! El bot te enviará ahora la dirección de billetera para depositar tus ${monto} USDT.`);
+                tg.showAlert(`Solicitud enviada. El bot te contactará con la billetera.`);
             }
         });
     }
