@@ -192,10 +192,14 @@
     }
 
     function compartirLink() {
-        const botUsername = "TuBot_bot"; // <--- CAMBIA ESTO POR EL NOMBRE DE TU BOT
-        const link = `https://t.me/${botUsername}?start=${userId}`;
-        const text = `🥯 ¡Únete a Digital Bakery Group! Mina $PAN y conviértete en socio de una panadería real.`;
-        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
+    // Aquí usamos el nombre de usuario que te dio BotFather
+    const botUsername = "DigitalBakeryGroup_BOT"; 
+    const link = `https://t.me/${botUsername}?start=${userId}`;
+    const text = `🥯 ¡Únete a Digital Bakery Group! Mina $PAN y conviértete en socio de una panadería real.`;
+    
+    // Esto abre el menú de compartir de Telegram con el link y el texto
+    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
+}
     }
 
     function comprarHorno(tipo, costo, produccion) {
