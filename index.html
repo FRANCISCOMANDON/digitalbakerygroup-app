@@ -16,6 +16,7 @@
             --ton: #0088cc;
             --success: #10b981;
             --accent: #8b5cf6;
+            --gold: #facc15;
         }
 
         body {
@@ -41,40 +42,39 @@
         .view.active { display: flex; }
 
         header { padding: 10px 20px; text-align: center; }
-        .app-title { font-size: 1rem; font-weight: 800; color: var(--primary); letter-spacing: 1.5px; text-transform: uppercase; }
+        .app-title { font-size: 0.9rem; font-weight: 800; color: var(--primary); letter-spacing: 1.5px; text-transform: uppercase; }
         .balance-container { font-size: 2.5rem; font-weight: 900; color: white; font-family: 'Courier New', monospace; margin: 10px 0; text-shadow: 0 0 15px rgba(245,158,11,0.5); }
 
         /* Minado */
         .mining-section { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        .bread-btn { font-size: 180px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 30px rgba(245,158,11,0.4)); -webkit-tap-highlight-color: transparent; }
+        .bread-btn { font-size: 160px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 30px rgba(245,158,11,0.4)); -webkit-tap-highlight-color: transparent; }
         .bread-btn:active { transform: scale(0.8); }
 
-        /* Números flotantes */
         .plus-number { position: absolute; color: var(--primary); font-weight: bold; font-size: 1.2rem; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 100; }
         @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-180px); opacity: 0; } }
 
-        /* Inversión Pulida */
+        /* Inversión */
         .invest-card { 
             background: linear-gradient(145deg, #1e293b, #0f172a); 
             border-radius: 24px; margin: 12px 20px; padding: 20px; 
             border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
         .invest-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .invest-tag { padding: 4px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
         .tag-low { background: #334155; color: white; }
         .tag-mid { background: #1d4ed8; color: white; }
         .tag-high { background: #7c3aed; color: white; }
+        .tag-whale { background: var(--gold); color: #000; }
         
         .invest-price { font-size: 1.5rem; font-weight: bold; color: var(--success); }
         .btn-invest { 
             background: var(--ton); color: white; border: none; padding: 14px; 
             width: 100%; border-radius: 16px; font-weight: 800; cursor: pointer; 
-            margin-top: 15px; transition: opacity 0.2s;
+            margin-top: 15px;
         }
 
         /* Referidos */
-        .referral-card { background: var(--card); border-radius: 24px; margin: 20px; padding: 30px; text-align: center; border: 1px solid rgba(245,158,11,0.2); }
+        .referral-card { background: var(--card); border-radius: 24px; margin: 20px; padding: 30px; text-align: center; }
         .reward-badge { background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 8px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin: 15px 0; border: 1px solid var(--success); }
 
         footer { 
@@ -82,8 +82,8 @@
             backdrop-filter: blur(10px); padding: 15px 0; display: flex; justify-content: space-around; 
             border-top: 1px solid rgba(255,255,255,0.05); 
         }
-        .nav-item { color: #64748b; text-align: center; font-size: 0.7rem; flex: 1; transition: 0.3s; }
-        .nav-item.active { color: var(--primary); transform: translateY(-3px); }
+        .nav-item { color: #64748b; text-align: center; font-size: 0.7rem; flex: 1; }
+        .nav-item.active { color: var(--primary); }
         .nav-item i { display: block; font-size: 1.5rem; margin-bottom: 5px; }
     </style>
 </head>
@@ -113,7 +113,7 @@
                 <span id="energy-text">1000/1000</span>
             </div>
             <div style="width: 85%; height: 8px; background: #1e293b; border-radius: 10px; margin: 10px auto; overflow: hidden;">
-                <div id="energy-fill" style="height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); width: 100%; transition: width 0.3s;"></div>
+                <div id="energy-fill" style="height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); width: 100%;"></div>
             </div>
         </div>
     </div>
@@ -122,55 +122,41 @@
         <header><div class="app-title">Real Crowdfunding</div></header>
         
         <div class="invest-card">
-            <div class="invest-header">
-                <span class="invest-tag tag-low">Iniciación</span>
-                <i class="fas fa-seedling" style="color: var(--success);"></i>
-            </div>
+            <div class="invest-header"><span class="invest-tag tag-low">Iniciación</span><i class="fas fa-seedling"></i></div>
             <h3>Pack Semilla 🌾</h3>
             <span class="invest-price">1.00 USDT</span>
-            <p style="font-size: 0.75rem; color: #94a3b8;">Acceso básico al fondo de utilidades de la panadería.</p>
-            <button class="btn-invest" onclick="pagarConWallet(1)">INVERTIR AHORA</button>
+            <button class="btn-invest" onclick="pagarConWallet(1)">INVERTIR</button>
         </div>
 
         <div class="invest-card">
-            <div class="invest-header">
-                <span class="invest-tag tag-mid">Popular</span>
-                <i class="fas fa-blender" style="color: var(--ton);"></i>
-            </div>
+            <div class="invest-header"><span class="invest-tag tag-mid">Popular</span><i class="fas fa-blender"></i></div>
             <h3>Pack Amasadora 🥯</h3>
             <span class="invest-price">10.00 USDT</span>
-            <p style="font-size: 0.75rem; color: #94a3b8;">Participación en el crecimiento de maquinaria industrial.</p>
-            <button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR AHORA</button>
+            <button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR</button>
         </div>
 
-        <div class="invest-card" style="border: 1px solid var(--accent);">
-            <div class="invest-header">
-                <span class="invest-tag tag-high">Premium</span>
-                <i class="fas fa-gem" style="color: var(--accent);"></i>
-            </div>
+        <div class="invest-card">
+            <div class="invest-header"><span class="invest-tag tag-high">Premium</span><i class="fas fa-gem"></i></div>
             <h3>Socio Mayoritario 💎</h3>
             <span class="invest-price">50.00 USDT</span>
-            <p style="font-size: 0.75rem; color: #94a3b8;">Beneficios máximos y estatus de socio fundador real.</p>
-            <button class="btn-invest" onclick="pagarConWallet(50)" style="background: var(--accent);">INVERTIR AHORA</button>
+            <button class="btn-invest" onclick="pagarConWallet(50)" style="background: var(--accent);">INVERTIR</button>
+        </div>
+
+        <div class="invest-card" style="border: 2px solid var(--gold);">
+            <div class="invest-header"><span class="invest-tag tag-whale">Whale</span><i class="fas fa-crown" style="color: var(--gold);"></i></div>
+            <h3 style="color: var(--gold);">Inversor Industrial 🏭</h3>
+            <span class="invest-price" style="color: white;">100.00 USDT</span>
+            <p style="font-size: 0.7rem; color: #94a3b8;">Socio estratégico. Máximo retorno sobre producción real.</p>
+            <button class="btn-invest" onclick="pagarConWallet(100)" style="background: var(--gold); color: black;">INVERTIR</button>
         </div>
     </div>
 
     <div id="view-friends" class="view">
         <header><div class="app-title">Network</div></header>
         <div class="referral-card">
-            <div style="font-size: 4rem; margin-bottom: 10px;">🤝</div>
             <h3>Invita y Gana</h3>
             <div class="reward-badge">+0.000005000 $PAN</div>
-            <p style="font-size: 0.8rem; color: #94a3b8; line-height: 1.5;">Haz crecer la comunidad y recibe bonificaciones por cada nuevo panadero industrial que traigas.</p>
-            
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn-invest" onclick="compartirLink()" style="margin:0; flex: 2;">
-                    <i class="fas fa-share-alt"></i> COMPARTIR
-                </button>
-                <button class="btn-invest" onclick="copiarLink()" style="margin:0; flex: 1; background: #334155;">
-                    <i class="fas fa-copy"></i>
-                </button>
-            </div>
+            <button class="btn-invest" onclick="compartirLink()">COMPARTIR ENLACE</button>
         </div>
     </div>
 
@@ -185,7 +171,9 @@
     const tg = window.Telegram.WebApp;
     let balance = parseFloat(localStorage.getItem('pan_v4')) || 0;
     let energy = 1000;
-    const userId = tg.initDataUnsafe?.user?.id || "admin";
+    
+    // VARIABLES PARA HORNOS AUTOMÁTICOS (Preparación)
+    let autoPPS = 0; // Puntos por segundo automáticos
 
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: window.location.origin + window.location.pathname + 'tonconnect-manifest.json',
@@ -204,18 +192,6 @@
         }, 1500);
     };
 
-    tonConnectUI.onStatusChange(wallet => {
-        const status = document.getElementById('wallet-status');
-        if (wallet) {
-            const addr = wallet.account.address;
-            status.innerText = "CONNECTED: " + addr.substring(0,6) + "..." + addr.substring(addr.length-4);
-            status.style.color = "#10b981";
-        } else {
-            status.innerText = "WEB3 DISCONNECTED";
-            status.style.color = "#64748b";
-        }
-    });
-
     function switchView(viewId, el) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -226,17 +202,14 @@
 
     document.getElementById('mine-btn').addEventListener('touchstart', (e) => {
         e.preventDefault();
-        const touches = Math.min(e.changedTouches.length, 3);
-        for(let i=0; i<touches; i++) {
-            if (energy > 0) {
-                balance += 0.000000001;
-                energy -= 1;
-                createPlusOne(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
-                tg.HapticFeedback.impactOccurred('medium');
-            }
+        if (energy > 0) {
+            balance += 0.000000001;
+            energy -= 1;
+            createPlusOne(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            tg.HapticFeedback.impactOccurred('medium');
+            updateDisplay();
+            localStorage.setItem('pan_v4', balance.toFixed(9));
         }
-        updateDisplay();
-        localStorage.setItem('pan_v4', balance.toFixed(9));
     });
 
     function createPlusOne(x, y) {
@@ -253,28 +226,33 @@
         document.getElementById('energy-fill').style.width = `${(energy/1000)*100}%`;
     }
 
-    function compartirLink() {
-        const link = `https://t.me/TuBot_bot?start=${userId}`;
-        const text = `🥯 ¡Únete a Digital Bakery Group! Mina $PAN y sé socio de una panadería real.`;
-        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
-    }
-
-    function copiarLink() {
-        const link = `https://t.me/TuBot_bot?start=${userId}`;
-        navigator.clipboard.writeText(link).then(() => tg.showAlert("¡Link copiado al portapapeles!"));
-    }
-
     async function pagarConWallet(monto) {
-        if (!tonConnectUI.connected) { tg.showAlert("Conecta tu Wallet TON primero."); return; }
+        if (!tonConnectUI.connected) { tg.showAlert("Conecta tu Wallet TON."); return; }
         const transaction = {
             validUntil: Math.floor(Date.now() / 1000) + 60,
             messages: [{ address: "UQCWJafwk-4iQJkxDjqaBD4NB4cBmswgGJVENe-HyCaO2FAV", amount: (monto * 1000000000).toString() }]
         };
-        try { await tonConnectUI.sendTransaction(transaction); tg.showAlert("Transacción en proceso..."); } 
-        catch (e) { tg.showAlert("Error o cancelación."); }
+        try { await tonConnectUI.sendTransaction(transaction); tg.showAlert("Transacción enviada."); } 
+        catch (e) { tg.showAlert("Cancelado."); }
     }
 
-    setInterval(() => { if (energy < 1000) { energy += 1; updateDisplay(); } }, 1000);
+    function compartirLink() {
+        const userId = tg.initDataUnsafe?.user?.id || "admin";
+        const link = `https://t.me/TuBot_bot?start=${userId}`;
+        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=Únete a Digital Bakery!`);
+    }
+
+    // CICLO DE TIEMPO (Energía y Hornos)
+    setInterval(() => { 
+        if (energy < 1000) energy += 1; 
+        
+        // Aquí sumaremos lo que generen los Hornos Automáticos
+        if (autoPPS > 0) {
+            balance += autoPPS;
+        }
+        
+        updateDisplay(); 
+    }, 1000);
 </script>
 </body>
 </html>
