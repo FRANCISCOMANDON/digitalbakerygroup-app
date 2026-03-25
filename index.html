@@ -10,7 +10,6 @@
         :root {
             --primary: #f59e0b;
             --bg: #020617;
-            --card: #1e293b;
             --text: #f8fafc;
         }
 
@@ -32,245 +31,182 @@
             background-size: cover; z-index: 9999;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 80px;
         }
+        #loader::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1; }
         .loader-bar { width: 70%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
         .loader-progress { width: 0%; height: 100%; background: var(--primary); transition: width 2s linear; }
 
-        /* Interfaz Principal */
         #main-content { display: none; flex-direction: column; height: 100%; opacity: 0; transition: opacity 0.5s; }
 
-        header {
-            padding: 20px;
-            text-align: center;
-            background: linear-gradient(0deg, transparent, rgba(245, 158, 11, 0.1));
-        }
-
+        header { padding: 30px 20px 10px; text-align: center; }
+        .balance-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* Balance con 9 decimales */
         .balance-container {
-            font-size: 3rem;
+            font-size: 2.2rem;
             font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin: 10px 0;
             color: var(--primary);
-            text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            margin: 5px 0;
+            font-family: 'Courier New', Courier, monospace;
         }
 
-        /* El Botón de Minado (El Pan) */
         .mining-section {
             flex: 1;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
         }
 
-        .click-area {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* La Moneda con el nombre token.jpg */
+        .token-btn {
+            width: 280px;
+            height: 280px;
+            background: url('token.jpg') no-repeat center;
+            background-size: contain;
             border-radius: 50%;
             cursor: pointer;
             transition: transform 0.05s;
+            filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.4));
             -webkit-tap-highlight-color: transparent;
         }
 
-        .click-area:active { transform: scale(0.95); }
+        .token-btn:active { transform: scale(0.92); }
 
-        .main-bread {
-            font-size: 120px;
-            filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.5));
-        }
+        .energy-section { padding: 20px; text-align: center; }
+        .energy-bar { width: 85%; height: 12px; background: #1e293b; border-radius: 10px; margin: 10px auto; overflow: hidden; border: 1px solid #334155; }
+        .energy-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); width: 100%; transition: width 0.2s; }
 
-        /* Energía */
-        .energy-container {
-            width: 80%;
-            margin-bottom: 30px;
-        }
-
-        .energy-text {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .energy-bar {
-            height: 12px;
-            background: #334155;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .energy-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #f59e0b, #fbbf24);
-            width: 100%;
-            transition: width 0.2s;
-        }
-
-        /* Flotantes +1 */
-        .plus-one {
+        .plus-number {
             position: absolute;
-            color: var(--primary);
+            color: #fbbf24;
             font-weight: bold;
-            font-size: 1.5rem;
-            animation: floatUp 0.8s ease-out forwards;
+            font-size: 1.4rem;
             pointer-events: none;
+            animation: floatUp 0.7s ease-out forwards;
+            text-shadow: 0 0 8px black;
+            z-index: 100;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-100px); opacity: 0; }
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-130px) scale(1.2); opacity: 0; }
         }
 
         footer {
-            background: var(--card);
-            padding: 15px;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
+            background: #0f172a;
+            padding: 20px 10px;
             display: flex;
             justify-content: space-around;
+            border-top: 1px solid #1e293b;
         }
 
-        .nav-item {
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.8rem;
-        }
-
+        .nav-item { color: #64748b; text-align: center; font-size: 0.75rem; flex: 1; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { display: block; font-size: 1.5rem; margin-bottom: 5px; }
-
     </style>
 </head>
 <body>
 
 <div id="loader">
-    <div style="color: white; margin-bottom: 15px; font-weight: bold;">HORNEANDO $PAN...</div>
+    <div style="color: white; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px;">MINANDO $PAN...</div>
     <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
 </div>
 
 <div id="main-content">
     <header>
-        <div class="user-welcome">@<span id="user-name">Usuario</span></div>
-        <div class="balance-container">
-            <i class="fas fa-bread-slice"></i>
-            <span id="balance">0</span>
-        </div>
-        <div style="font-size: 0.9rem; color: #94a3b8;">Tokens $PAN</div>
+        <div class="balance-label">Balance Total de $PAN</div>
+        <div class="balance-container" id="balance">0.000000000</div>
+        <div style="font-size: 0.8rem; color: #4ade80; font-weight: bold;">• RED PRINCIPAL ACTIVA</div>
     </header>
 
     <div class="mining-section">
-        <div class="click-area" id="pan-btn">
-            <span class="main-bread">🍞</span>
+        <div class="token-btn" id="mine-btn"></div>
+    </div>
+
+    <div class="energy-section">
+        <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.85rem; font-weight: bold;">
+            <span>⚡ ENERGÍA</span>
+            <span id="energy-text">1000/1000</span>
+        </div>
+        <div class="energy-bar">
+            <div class="energy-fill" id="energy-fill"></div>
         </div>
     </div>
 
-    <center>
-        <div class="energy-container">
-            <div class="energy-text">
-                <span>⚡ Energía</span>
-                <span id="energy-val">1000/1000</span>
-            </div>
-            <div class="energy-bar">
-                <div class="energy-fill" id="energy-fill"></div>
-            </div>
-        </div>
-    </center>
-
     <footer>
-        <div class="nav-item active">
-            <i class="fas fa-hand-pointer"></i>
-            Tap
-        </div>
-        <div class="nav-item" onclick="tg.showAlert('Tienda próximamente')">
-            <i class="fas fa-store"></i>
-            Tienda
-        </div>
-        <div class="nav-item" onclick="tg.showAlert('Invita amigos para ganar $PAN')">
-            <i class="fas fa-users"></i>
-            Amigos
-        </div>
+        <div class="nav-item active"><i class="fas fa-hammer"></i>MINAR</div>
+        <div class="nav-item" onclick="tg.showAlert('Próximamente: Cambia tus $PAN')"><i class="fas fa-exchange-alt"></i>SWAP</div>
+        <div class="nav-item" onclick="tg.showAlert('Gana $PAN invitando amigos')"><i class="fas fa-user-friends"></i>AMIGOS</div>
     </footer>
 </div>
 
 <script>
     let tg = window.Telegram.WebApp;
-    let balance = parseInt(localStorage.getItem('pan_balance')) || 0;
+    // Guardamos con 9 decimales
+    let balance = parseFloat(localStorage.getItem('pan_v3')) || 0.000000000;
     let energy = 1000;
     const maxEnergy = 1000;
+    const clickValue = 0.000000001; // Valor por cada clic
 
     tg.expand();
-    document.getElementById('balance').innerText = balance.toLocaleString();
 
-    // Loader
     window.onload = () => {
         document.getElementById('progress').style.width = '100%';
+        updateDisplay();
         setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('main-content').style.display = 'flex';
-            document.getElementById('main-content').style.opacity = '1';
-        }, 2000);
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.display = 'flex';
+                document.getElementById('main-content').style.opacity = '1';
+            }, 500);
+        }, 2200);
     };
 
-    if (tg.initDataUnsafe?.user) {
-        document.getElementById('user-name').innerText = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name;
-    }
-
-    // Lógica de Clic
-    const panBtn = document.getElementById('pan-btn');
+    const mineBtn = document.getElementById('mine-btn');
     
-    panBtn.addEventListener('touchstart', (e) => {
+    // Soporte para múltiples dedos (Multi-touch)
+    mineBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if (energy > 0) {
-            // Incrementar balance
-            balance += 1;
-            energy -= 1;
-            updateUI();
-            
-            // Efecto visual +1
-            const touch = e.touches[0];
-            createPlusOne(touch.clientX, touch.clientY);
-            
-            // Feedback
-            tg.HapticFeedback.impactOccurred('light');
-            localStorage.setItem('pan_balance', balance);
-        } else {
-            tg.HapticFeedback.notificationOccurred('error');
+        for(let i=0; i<e.changedTouches.length; i++) {
+            if (energy > 0) {
+                balance += clickValue;
+                energy -= 1;
+                
+                const touch = e.changedTouches[i];
+                showFloatingEffect(touch.clientX, touch.clientY);
+                tg.HapticFeedback.impactOccurred('medium');
+            } else {
+                tg.HapticFeedback.notificationOccurred('error');
+            }
         }
+        updateDisplay();
+        localStorage.setItem('pan_v3', balance.toFixed(9));
     });
 
-    function updateUI() {
-        document.getElementById('balance').innerText = balance.toLocaleString();
-        document.getElementById('energy-val').innerText = `${energy}/${maxEnergy}`;
-        const percent = (energy / maxEnergy) * 100;
-        document.getElementById('energy-fill').style.width = `${percent}%`;
+    function updateDisplay() {
+        document.getElementById('balance').innerText = balance.toFixed(9);
+        document.getElementById('energy-text').innerText = `${energy}/${maxEnergy}`;
+        document.getElementById('energy-fill').style.width = `${(energy/maxEnergy)*100}%`;
     }
 
-    function createPlusOne(x, y) {
-        const p = document.createElement('div');
-        p.className = 'plus-one';
-        p.innerText = '+1';
-        p.style.left = `${x}px`;
-        p.style.top = `${y}px`;
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 800);
+    function showFloatingEffect(x, y) {
+        const num = document.createElement('div');
+        num.className = 'plus-number';
+        // Muestra el incremento en pantalla
+        num.innerText = '+0.000000001'; 
+        num.style.left = (x - 50) + 'px';
+        num.style.top = (y - 50) + 'px';
+        document.body.appendChild(num);
+        setTimeout(() => num.remove(), 700);
     }
 
-    // Recuperación de energía lenta
+    // Recuperar energía (2 puntos cada segundo)
     setInterval(() => {
         if (energy < maxEnergy) {
-            energy += 1;
-            updateUI();
+            energy += 2;
+            updateDisplay();
         }
-    }, 1500);
-
+    }, 1000);
 </script>
 </body>
 </html>
