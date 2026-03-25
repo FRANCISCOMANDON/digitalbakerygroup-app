@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Digital Bakery Group - Virtual Factory</title>
+    <title>Digital Bakery Group - Global Network</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -43,15 +43,14 @@
 
         header { padding: 10px 20px; text-align: center; }
         .app-title { font-size: 0.9rem; font-weight: 800; color: var(--primary); letter-spacing: 1.5px; text-transform: uppercase; }
-        .balance-container { font-size: 2.3rem; font-weight: 900; color: white; font-family: 'Courier New', monospace; margin: 5px 0; text-shadow: 0 0 15px rgba(245,158,11,0.5); }
+        .balance-container { font-size: 2.3rem; font-weight: 900; color: white; font-family: 'Courier New', monospace; margin: 10px 0; text-shadow: 0 0 15px rgba(245,158,11,0.5); }
         .pps-badge { font-size: 0.7rem; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px 12px; border-radius: 20px; font-weight: bold; }
 
-        /* Minado y Panadería Virtual */
         .bakery-display { 
             background: rgba(30, 41, 59, 0.5); border-radius: 20px; margin: 10px 20px; padding: 10px;
             display: flex; justify-content: center; gap: 10px; border: 1px solid rgba(255,255,255,0.05);
         }
-        .bakery-item { font-size: 1.2rem; opacity: 0.3; transition: 0.3s; }
+        .bakery-item { font-size: 1.2rem; opacity: 0.2; transition: 0.3s; }
         .bakery-item.active { opacity: 1; filter: drop-shadow(0 0 5px var(--primary)); }
 
         .mining-section { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
@@ -61,7 +60,6 @@
         .plus-number { position: absolute; color: var(--primary); font-weight: bold; font-size: 1.1rem; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 100; }
         @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-180px); opacity: 0; } }
 
-        /* Tienda de Hornos ($PAN) */
         .item-card { 
             background: linear-gradient(145deg, #1e293b, #0f172a); 
             border-radius: 20px; margin: 10px 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.05);
@@ -72,16 +70,19 @@
         .item-info p { margin: 5px 0; font-size: 0.7rem; color: #94a3b8; }
         .btn-buy { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
 
-        /* Inversión (USDT) */
         .invest-card { background: var(--card); border-radius: 20px; margin: 12px 15px; padding: 18px; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
         .btn-invest { background: var(--ton); color: white; border: none; padding: 12px; width: 100%; border-radius: 14px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+
+        /* Estilos Referidos Actualizados */
+        .referral-hero { background: linear-gradient(to bottom, #1e293b, #0f172a); border-radius: 24px; margin: 20px; padding: 30px; text-align: center; border: 1px solid rgba(245,158,11,0.1); }
+        .reward-pill { background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 8px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: bold; margin: 15px 0; display: inline-block; border: 1px solid var(--success); }
 
         footer { 
             position: fixed; bottom: 0; width: 100%; background: rgba(15, 23, 42, 0.98); 
             padding: 15px 0; display: flex; justify-content: space-around; 
             border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
         }
-        .nav-item { color: #64748b; text-align: center; font-size: 0.65rem; flex: 1; }
+        .nav-item { color: #64748b; text-align: center; font-size: 0.65rem; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { display: block; font-size: 1.3rem; margin-bottom: 5px; }
     </style>
@@ -99,80 +100,52 @@
     
     <div id="view-mine" class="view active">
         <header>
-            <div class="app-title">Estación de Horneado</div>
+            <div class="app-title">Producción Real</div>
             <div class="balance-container" id="balance">0.000000000</div>
             <div id="pps-display" class="pps-badge">+0.000000000 $PAN / s</div>
         </header>
-
-        <div class="bakery-display" id="bakery-status">
+        <div class="bakery-display">
             <span class="bakery-item" id="icon-casero">🏠</span>
             <span class="bakery-item" id="icon-industrial">🏭</span>
             <span class="bakery-item" id="icon-maestro">🌋</span>
         </div>
-
-        <div class="mining-section">
-            <div class="bread-btn" id="mine-btn">🍞</div>
-        </div>
-
+        <div class="mining-section"><div class="bread-btn" id="mine-btn">🍞</div></div>
         <div style="padding: 15px; text-align: center;">
             <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.7rem; font-weight: bold; color: #94a3b8; margin-bottom: 5px;">
-                <span>ENERGÍA</span>
-                <span id="energy-text">1000/1000</span>
+                <span>ENERGÍA</span><span id="energy-text">1000/1000</span>
             </div>
-            <div style="width: 85%; height: 6px; background: #1e293b; border-radius: 10px; margin: 0 auto; overflow: hidden;">
-                <div id="energy-fill" style="height: 100%; background: var(--primary); width: 100%;"></div>
-            </div>
+            <div style="width: 85%; height: 6px; background: #1e293b; border-radius: 10px; margin: 0 auto; overflow: hidden;"><div id="energy-fill" style="height: 100%; background: var(--primary); width: 100%;"></div></div>
         </div>
     </div>
 
     <div id="view-shop" class="view">
-        <header><div class="app-title">Mejorar Producción</div></header>
-        <div class="item-card">
-            <div style="font-size: 2rem;">🏠</div>
-            <div class="item-info"><h4>Horno Casero</h4><p>+0.000000010/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.000005 $PAN</div></div>
-            <button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 0.00000001)">MEJORAR</button>
-        </div>
-        <div class="item-card">
-            <div style="font-size: 2rem;">🏭</div>
-            <div class="item-info"><h4>Horno Industrial</h4><p>+0.000000100/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.00005 $PAN</div></div>
-            <button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 0.0000001)">MEJORAR</button>
-        </div>
-        <div class="item-card">
-            <div style="font-size: 2rem;">🌋</div>
-            <div class="item-info"><h4>Horno Maestro</h4><p>+0.000001000/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.0005 $PAN</div></div>
-            <button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 0.000001)">MEJORAR</button>
-        </div>
+        <header><div class="app-title">Upgrade Factory</div></header>
+        <div class="item-card"><div style="font-size: 2rem;">🏠</div><div class="item-info"><h4>Horno Casero</h4><p>+0.000000010/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.000005 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 0.00000001)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">🏭</div><div class="item-info"><h4>Horno Industrial</h4><p>+0.000000100/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.00005 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 0.0000001)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">🌋</div><div class="item-info"><h4>Horno Maestro</h4><p>+0.000001000/s</p><div style="font-size: 0.75rem; color: var(--primary);">0.0005 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 0.000001)">COMPRAR</button></div>
     </div>
 
     <div id="view-invest" class="view">
-        <header><div class="app-title">Inversión Real</div></header>
-        <div class="invest-card">
-            <div style="color: var(--success); font-weight: bold;">Pack Semilla • 1 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(1)">INVERTIR</button>
-        </div>
-        <div class="invest-card">
-            <div style="color: var(--ton); font-weight: bold;">Pack Amasadora • 10 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR</button>
-        </div>
-        <div class="invest-card">
-            <div style="color: var(--accent); font-weight: bold;">Socio Mayoritario • 50 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(50)" style="background: var(--accent);">INVERTIR</button>
-        </div>
-        <div class="invest-card" style="border: 1px solid var(--gold);">
-            <div style="color: var(--gold); font-weight: bold;">Inversor Industrial • 100 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(100)" style="background: var(--gold); color: black;">INVERTIR</button>
-        </div>
-        <div class="invest-card" style="border: 1px solid var(--diamond);">
-            <div style="color: var(--diamond); font-weight: bold;">Socio Fundador • 200 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(200)" style="background: var(--diamond); color: black;">INVERTIR</button>
-        </div>
-        <div class="invest-card" style="border: 2px solid var(--accent);">
-            <div style="color: var(--accent); font-weight: bold;">Master Baker • 500 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(500)" style="background: var(--accent);">INVERTIR</button>
-        </div>
-        <div class="invest-card" style="background: linear-gradient(to right, #facc15, #f59e0b);">
-            <div style="color: #000; font-weight: 900;">👑 LEGENDARY INVESTOR • 1000 USDT</div>
-            <button class="btn-invest" onclick="pagarConWallet(1000)" style="background: #000; color: #fff;">INVERTIR</button>
+        <header><div class="app-title">Marketplace</div></header>
+        <div class="invest-card"><div style="color: var(--success); font-weight: bold;">Pack Semilla • 1 USDT</div><button class="btn-invest" onclick="pagarConWallet(1)">INVERTIR</button></div>
+        <div class="invest-card"><div style="color: var(--ton); font-weight: bold;">Pack Amasadora • 10 USDT</div><button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR</button></div>
+        <div class="invest-card"><div style="color: var(--accent); font-weight: bold;">Socio Mayoritario • 50 USDT</div><button class="btn-invest" onclick="pagarConWallet(50)" style="background: var(--accent);">INVERTIR</button></div>
+        <div class="invest-card" style="border: 1px solid var(--gold);"><div style="color: var(--gold); font-weight: bold;">Inversor Industrial • 100 USDT</div><button class="btn-invest" onclick="pagarConWallet(100)" style="background: var(--gold); color: black;">INVERTIR</button></div>
+        <div class="invest-card" style="border: 1px solid var(--diamond);"><div style="color: var(--diamond); font-weight: bold;">Socio Fundador • 200 USDT</div><button class="btn-invest" onclick="pagarConWallet(200)" style="background: var(--diamond); color: black;">INVERTIR</button></div>
+        <div class="invest-card" style="border: 1px solid var(--accent);"><div style="color: var(--accent); font-weight: bold;">Master Baker • 500 USDT</div><button class="btn-invest" onclick="pagarConWallet(500)" style="background: var(--accent);">INVERTIR</button></div>
+        <div class="invest-card" style="background: linear-gradient(to right, #facc15, #f59e0b);"><div style="color: #000; font-weight: 900;">👑 LEGENDARY • 1000 USDT</div><button class="btn-invest" onclick="pagarConWallet(1000)" style="background: #000; color: #fff;">INVERTIR</button></div>
+    </div>
+
+    <div id="view-friends" class="view">
+        <header><div class="app-title">Referral Program</div></header>
+        <div class="referral-hero">
+            <i class="fas fa-users" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h3>Expande la Red</h3>
+            <p style="font-size: 0.8rem; color: #94a3b8;">Gana recompensas por cada nuevo socio que traigas al proyecto Digital Bakery.</p>
+            <div class="reward-pill">+0.000005000 $PAN por amigo</div>
+            <button class="btn-invest" onclick="compartirLink()" style="background: var(--primary); margin-top: 20px;">
+                <i class="fas fa-paper-plane"></i> INVITAR AMIGO
+            </button>
         </div>
     </div>
 
@@ -180,7 +153,7 @@
         <div class="nav-item active" onclick="switchView('view-mine', this)"><i class="fas fa-bread-slice"></i>FACTORY</div>
         <div class="nav-item" onclick="switchView('view-shop', this)"><i class="fas fa-tools"></i>EQUIPOS</div>
         <div class="nav-item" onclick="switchView('view-invest', this)"><i class="fas fa-coins"></i>USDT</div>
-        <div class="nav-item" onclick="tg.showAlert('Próximamente')"><i class="fas fa-user-friends"></i>EQUIPO</div>
+        <div class="nav-item" onclick="switchView('view-friends', this)"><i class="fas fa-user-friends"></i>AMIGOS</div>
     </footer>
 </div>
 
@@ -190,6 +163,7 @@
     let energy = 1000;
     let pps = parseFloat(localStorage.getItem('pan_pps')) || 0;
     let hornos = JSON.parse(localStorage.getItem('pan_inventario')) || { casero: 0, industrial: 0, maestro: 0 };
+    const userId = tg.initDataUnsafe?.user?.id || "admin";
 
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: window.location.origin + window.location.pathname + 'tonconnect-manifest.json',
@@ -209,6 +183,21 @@
         }, 1500);
     };
 
+    function switchView(viewId, el) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        el.classList.add('active');
+        tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function compartirLink() {
+        const botUsername = "TuBot_bot"; // <--- CAMBIA ESTO POR EL NOMBRE DE TU BOT
+        const link = `https://t.me/${botUsername}?start=${userId}`;
+        const text = `🥯 ¡Únete a Digital Bakery Group! Mina $PAN y conviértete en socio de una panadería real.`;
+        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
+    }
+
     function comprarHorno(tipo, costo, produccion) {
         if (balance >= costo) {
             balance -= costo;
@@ -227,13 +216,6 @@
         if(hornos.casero > 0) document.getElementById('icon-casero').classList.add('active');
         if(hornos.industrial > 0) document.getElementById('icon-industrial').classList.add('active');
         if(hornos.maestro > 0) document.getElementById('icon-maestro').classList.add('active');
-    }
-
-    function switchView(viewId, el) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-        el.classList.add('active');
     }
 
     document.getElementById('mine-btn').addEventListener('touchstart', (e) => {
