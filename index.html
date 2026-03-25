@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yesman Bakery - $PAN Protocol</title>
+    <title>Digital Bakery Group - $PAN Token</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -11,6 +11,7 @@
             --primary: #f59e0b;
             --bg: #020617;
             --text: #f8fafc;
+            --secondary-text: #94a3b8;
         }
 
         body {
@@ -22,28 +23,39 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            -webkit-user-select: none; /* Evita que el usuario seleccione texto */
-            user-select: none;
+            -webkit-user-select: none; user-select: none;
         }
 
-        /* Splash Screen */
+        /* Splash Screen (usando portada.jpg) */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg) url('portada.jpg') no-repeat center;
             background-size: cover; z-index: 9999;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 80px;
         }
-        #loader::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: -1; }
+        #loader::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: -1; }
         .loader-bar { width: 70%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
         .loader-progress { width: 0%; height: 100%; background: var(--primary); transition: width 2s linear; }
 
-        #main-content { display: none; flex-direction: column; height: 100%; opacity: 0; transition: opacity 0.5s; }
+        #main-content { display: none; flex-direction: column; height: 100%; opacity: 0; transition: opacity 0.5s ease-in; }
 
         header { padding: 30px 20px 10px; text-align: center; }
-        .balance-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* Nombre de la App Restaurado */
+        .app-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+
+        .balance-label { font-size: 0.8rem; color: var(--secondary-text); }
         
         .balance-container {
-            font-size: 2.2rem;
+            font-size: 2.3rem;
             font-weight: 800;
             color: var(--primary);
             margin: 5px 0;
@@ -58,44 +70,39 @@
             position: relative;
         }
 
-        /* MONEDA PROFESIONAL (PNG Transparente) */
-        .token-btn {
-            width: 290px;
-            height: 290px;
-            /* CAMBIADO A PNG */
-            background: url('token.png') no-repeat center;
-            background-size: contain;
-            border-radius: 50%;
+        /* EL PAN REALISTA PREMIUM (Sin imagen externa) */
+        .bread-btn {
+            font-size: 180px; /* Tamaño gigante */
             cursor: pointer;
             transition: transform 0.05s, filter 0.1s;
-            /* Sombra suave y dorada que se adapta al modo oscuro */
-            filter: drop-shadow(0 15px 30px rgba(245, 158, 11, 0.4));
-            -webkit-tap-highlight-color: transparent; /* Evita el recuadro gris al tocar */
+            /* Sombra dorada suave */
+            filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.3));
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .token-btn:active {
-            transform: scale(0.92);
-            filter: drop-shadow(0 10px 15px rgba(245, 158, 11, 0.2));
+        .bread-btn:active {
+            transform: scale(0.93) rotate(-2deg);
+            filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.2));
         }
 
         .energy-section { padding: 20px; text-align: center; }
-        .energy-bar { width: 85%; height: 12px; background: #1e293b; border-radius: 10px; margin: 10px auto; overflow: hidden; border: 1px solid #334155; }
+        .energy-bar { width: 85%; height: 14px; background: #1e293b; border-radius: 10px; margin: 10px auto; overflow: hidden; border: 1px solid #334155; }
         .energy-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); width: 100%; transition: width 0.2s; }
 
         .plus-number {
             position: absolute;
             color: #fbbf24;
             font-weight: bold;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             pointer-events: none;
             animation: floatUp 0.8s ease-out forwards;
-            text-shadow: 0 0 10px black;
+            text-shadow: 0 0 8px black;
             z-index: 100;
         }
 
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-130px) scale(1.3); opacity: 0; }
+            100% { transform: translateY(-140px) scale(1.3); opacity: 0; }
         }
 
         footer {
@@ -114,24 +121,24 @@
 <body>
 
 <div id="loader">
-    <div style="color: white; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px;">SYNCING $PAN NETWORK...</div>
+    <div style="color: white; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px;">CARGANDO $PAN PROTOCOL...</div>
     <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
 </div>
 
 <div id="main-content">
     <header>
-        <div class="balance-label">Yesman Bakery: Total $PAN Protocol</div>
+        <div class="app-title">Digital Bakery Group</div>
+        <div class="balance-label">Tu Balance de $PAN</div>
         <div class="balance-container" id="balance">0.000000000</div>
-        <div style="font-size: 0.8rem; color: #4ade80; font-weight: bold;">• LIVE MAINNET</div>
     </header>
 
     <div class="mining-section">
-        <div class="token-btn" id="mine-btn"></div>
+        <div class="bread-btn" id="mine-btn">🍞</div>
     </div>
 
     <div class="energy-section">
-        <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.85rem; font-weight: bold;">
-            <span>⚡ POWER ENERGY</span>
+        <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.9rem; font-weight: bold;">
+            <span>⚡ Energía para Hornear</span>
             <span id="energy-text">1000/1000</span>
         </div>
         <div class="energy-bar">
@@ -140,9 +147,9 @@
     </div>
 
     <footer>
-        <div class="nav-item active"><i class="fas fa-hammer"></i>MINAR</div>
-        <div class="nav-item" onclick="tg.showAlert('Swap opening soon')"><i class="fas fa-exchange-alt"></i>SWAP</div>
-        <div class="nav-item" onclick="tg.showAlert('Invite friends link copied')"><i class="fas fa-user-friends"></i>AMIGOS</div>
+        <div class="nav-item active"><i class="fas fa-hand-pointer"></i>HORNAR</div>
+        <div class="nav-item" onclick="tg.showAlert('Próximamente: Mercado de $PAN')"><i class="fas fa-coins"></i>MERCADO</div>
+        <div class="nav-item" onclick="tg.showAlert('Gana extra invitando amigos')"><i class="fas fa-users"></i>COMUNIDAD</div>
     </footer>
 </div>
 
@@ -166,19 +173,19 @@
                 document.getElementById('main-content').style.display = 'flex';
                 document.getElementById('main-content').style.opacity = '1';
             }, 500);
-        }, 2200);
+        }, 2100);
     };
 
     const mineBtn = document.getElementById('mine-btn');
     
-    // Lógica Multi-touch limitada a 3 dedos
+    // Multi-touch limitado a 3 dedos máximo
     mineBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         
-        // LIMITAMOS A MÁXIMO 3 DEDOS (e.changedTouches.length es el número de toques)
-        const numToques = Math.min(e.changedTouches.length, 3);
+        // Contamos un máximo de 3 dedos
+        const touchesToCount = Math.min(e.changedTouches.length, 3);
         
-        for(let i=0; i < numToques; i++) {
+        for(let i=0; i < touchesToCount; i++) {
             if (energy > 0) {
                 balance += clickValue;
                 energy -= 1;
@@ -210,10 +217,10 @@
         setTimeout(() => num.remove(), 750);
     }
 
-    // Recuperar energía (2 puntos cada segundo)
+    // Recuperar energía lenta
     setInterval(() => {
         if (energy < maxEnergy) {
-            energy += 2;
+            energy += 1; // Recupera 1 punto por segundo
             updateDisplay();
         }
     }, 1000);
