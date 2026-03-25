@@ -2,37 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panadería Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Digital Bakery Group App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --tg-theme-bg-color: #ffffff;
-            --tg-theme-button-color: #e67e22;
+            --tg-theme-bg-color: #0f172a;
+            --tg-theme-button-color: #f59e0b;
             --tg-theme-button-text-color: #ffffff;
-            --tg-theme-text-color: #2c3e50;
+            --tg-theme-text-color: #f8fafc;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--tg-theme-bg-color);
+            background-color: #020617; /* Fondo oscuro elegante */
             color: var(--tg-theme-text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            overflow-x: hidden;
         }
 
+        /* Encabezado con tu imagen */
         header {
-            background: var(--tg-theme-button-color);
-            color: white;
-            width: 100%;
-            padding: 20px 0;
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                             url('Lanzamiento digital para proyectos innovadores.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
+            border-bottom: 3px solid var(--tg-theme-button-color);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .user-welcome {
+            background: rgba(245, 158, 11, 0.8);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: bold;
         }
 
         .container {
@@ -40,75 +60,96 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            width: 90%;
         }
 
         .product-card {
-            background: #fdf2e9;
+            background: #1e293b;
             border-radius: 15px;
             padding: 15px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            border: 1px solid #334155;
+            transition: transform 0.1s ease;
         }
 
-        .product-card:active { transform: scale(0.95); }
+        .product-card:active {
+            transform: scale(0.95);
+        }
 
-        .product-card i { font-size: 40px; color: #d35400; }
+        .product-card i {
+            font-size: 35px;
+            color: #f59e0b;
+            margin-bottom: 10px;
+        }
 
-        .price { font-weight: bold; color: #e67e22; display: block; margin: 10px 0; }
+        .product-card h3 {
+            margin: 10px 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .price {
+            display: block;
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
         .btn-add {
             background: var(--tg-theme-button-color);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 10px;
+            padding: 8px 0;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: bold;
             cursor: pointer;
         }
 
         #cart-status {
             position: fixed;
-            bottom: 20px;
-            background: #27ae60;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
             color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
+            padding: 10px 25px;
+            border-radius: 50px;
             display: none;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>🍞 Panadería Central</h1>
-    <p>Bienvenido, <span id="user-name">Invitado</span></p>
+    <h1>Digital Bakery</h1>
+    <div class="user-welcome">Hola, <span id="user-name">Usuario</span> 🚀</div>
 </header>
 
 <div class="container">
     <div class="product-card">
         <i class="fas fa-bread-slice"></i>
-        <h3>Croissant</h3>
+        <h3>Croissant Gold</h3>
         <span class="price">$1.50</span>
-        <button class="btn-add" onclick="addToCart('Croissant', 1.50)">Agregar</button>
+        <button class="btn-add" onclick="addToCart('Croissant Gold', 1.50)">Añadir</button>
+    </div>
+    <div class="product-card">
+        <i class="fas fa-cookie-bite"></i>
+        <h3>Cookie Crypto</h3>
+        <span class="price">$0.80</span>
+        <button class="btn-add" onclick="addToCart('Cookie Crypto', 0.80)">Añadir</button>
     </div>
     <div class="product-card">
         <i class="fas fa-stroopwafel"></i>
-        <h3>Baguette</h3>
+        <h3>Baguette Tech</h3>
         <span class="price">$2.00</span>
-        <button class="btn-add" onclick="addToCart('Baguette', 2.00)">Agregar</button>
+        <button class="btn-add" onclick="addToCart('Baguette Tech', 2.00)">Añadir</button>
     </div>
     <div class="product-card">
-        <i class="fas fa-cookie"></i>
-        <h3>Galleta XL</h3>
-        <span class="price">$0.75</span>
-        <button class="btn-add" onclick="addToCart('Galleta XL', 0.75)">Agregar</button>
-    </div>
-    <div class="product-card">
-        <i class="fas fa-birthday-cake"></i>
-        <h3>Muffin</h3>
+        <i class="fas fa-cake"></i>
+        <h3>Muffin Master</h3>
         <span class="price">$2.50</span>
-        <button class="btn-add" onclick="addToCart('Muffin', 2.50)">Agregar</button>
+        <button class="btn-add" onclick="addToCart('Muffin Master', 2.50)">Añadir</button>
     </div>
 </div>
 
@@ -118,10 +159,13 @@
     let tg = window.Telegram.WebApp;
     let cart = [];
 
-    tg.expand(); // Expande la app a pantalla completa
-    
-    // Mostrar nombre del usuario de Telegram
-    if (tg.initDataUnsafe.user) {
+    tg.expand();
+    tg.MainButton.setParams({
+        text_color: '#ffffff',
+        color: '#f59e0b'
+    });
+
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
     }
 
@@ -131,20 +175,32 @@
         
         const status = document.getElementById('cart-status');
         status.style.display = 'block';
-        status.innerText = `Agregado: ${name}`;
-        setTimeout(() => { status.style.display = 'none'; }, 2000);
+        status.innerText = `✅ ${name} añadido`;
+        setTimeout(() => { status.style.display = 'none'; }, 1500);
+        
+        tg.HapticFeedback.impactOccurred('medium');
     }
 
     function updateMainButton() {
-        const total = cart.reduce((sum, item) => sum + item.price, 0);
-        tg.MainButton.text = `PAGAR $${total.toFixed(2)}`;
-        tg.MainButton.show();
+        if (cart.length > 0) {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            tg.MainButton.text = `CONFIRMAR PEDIDO ($${total.toFixed(2)})`;
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.hide();
+        }
     }
 
-    // Evento al presionar el botón principal de Telegram
     tg.onEvent('mainButtonClicked', function() {
-        tg.sendData(JSON.stringify(cart)); // Envía el pedido al bot
-        tg.close();
+        tg.showConfirm("¿Deseas procesar tu pedido en Digital Bakery?", function(ok) {
+            if (ok) {
+                tg.sendData(JSON.stringify({
+                    pedido: cart,
+                    total: cart.reduce((sum, item) => sum + item.price, 0)
+                }));
+                tg.close();
+            }
+        });
     });
 </script>
 
