@@ -6,7 +6,6 @@
     <title>Digital Bakery Group App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root {
             --tg-theme-bg-color: #020617;
@@ -22,12 +21,11 @@
             overflow: hidden;
         }
 
-        /* PANTALLA DE CARGA MEJORADA */
+        /* Pantalla de carga con el nuevo nombre portada.jpg */
         #loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            /* Esta línea ahora busca la imagen en la misma carpeta automáticamente */
-            background: #020617 url('Lanzamiento digital para proyectos innovadores.jpg') no-repeat center;
+            background: #020617 url('portada.jpg') no-repeat center;
             background-size: cover;
             z-index: 9999;
             display: flex;
@@ -46,8 +44,7 @@
         }
 
         .loader-bar {
-            width: 70%;
-            height: 6px;
+            width: 70%; height: 6px;
             background: rgba(255,255,255,0.1);
             border-radius: 10px;
             overflow: hidden;
@@ -55,22 +52,17 @@
         }
 
         .loader-progress {
-            width: 0%;
-            height: 100%;
+            width: 0%; height: 100%;
             background: linear-gradient(90deg, #f59e0b, #fbbf24);
             box-shadow: 0 0 15px #f59e0b;
             transition: width 2s cubic-bezier(0.1, 0, 0.2, 1);
         }
 
-        #main-content {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.6s ease-in;
-        }
+        #main-content { display: none; opacity: 0; transition: opacity 0.6s ease-in; }
 
         header {
             background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                             url('Lanzamiento digital para proyectos innovadores.jpg');
+                             url('portada.jpg');
             background-size: cover;
             background-position: center;
             height: 180px;
@@ -151,7 +143,6 @@
 <script>
     let tg = window.Telegram.WebApp;
     let cart = [];
-
     tg.expand();
 
     window.onload = function() {
@@ -204,6 +195,5 @@
         });
     });
 </script>
-
 </body>
 </html>
