@@ -167,7 +167,7 @@
             <h3>Invita Amigos</h3>
             <p style="color:#94a3b8; font-size: 0.85rem; line-height: 1.5;">Gana recompensas por cada nuevo socio blockchain que se una a Digital Bakery Group con tu enlace.</p>
             <div style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; display: inline-block; margin: 15px 0;">+0.000005000 $PAN por amigo</div>
-            <button class="btn-usdt" onclick="compartir()" style="background: var(--primary); margin-top: 20px;">COMPARTIR LINK</button>
+            <button class="btn-buy" onclick="compartir()" style="background: var(--primary); margin-top: 20px; width: 80%;">COMPARTIR LINK</button>
         </div>
     </div>
 
@@ -183,7 +183,6 @@
     const tg = window.Telegram.WebApp;
     const storageKey = 'dbakery_val_v6_restored';
     
-    // Valores restablecidos a CERO para la interfaz
     let balance = 0;
     let pps = 0;
     let hornos = { casero: 0, industrial: 0, maestro: 0 };
@@ -191,7 +190,6 @@
     let isRecharging = false;
     let claimablePassive = 0;
 
-    // Guardar inmediatamente los valores en cero para limpiar el storage previo
     save();
 
     let tonConnectUI;
@@ -306,8 +304,13 @@
     function compartir() {
         const uid = tg.initDataUnsafe?.user?.id || "admin";
         const botUsername = "DigitalBakeryGroup_BOT";
-        const link = `https://t.me/${botUsername}?start=${uid}`;
-        const text = `Únete a mi cripto-panadería digital! Mina $PAN y conviértete en socio.`;
+        // El formato oficial para que el link abra directamente la Mini App es:
+        // https://t.me/nombre_del_bot/nombre_app?startapp=parametro
+        // Nota: Asegúrate de que el "nombre_app" sea el nombre corto que pusiste en BotFather
+        const link = `https://t.me/${botUsername}/app?startapp=${uid}`;
+        const text = `¡Únete a Digital Bakery! Mina $PAN y construye tu imperio cripto conmigo. 🍞💰`;
+        
+        // Usamos share url oficial de Telegram
         tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
     }
 
