@@ -37,7 +37,6 @@
             background-size: cover; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        /* Se eliminó la capa opaca (loader::before) para mayor iluminación */
         
         .loader-bar { width: 220px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px; margin-top: 25px; overflow: hidden; }
         .loader-progress { width: 0%; height: 100%; background: var(--primary); transition: width 3.5s linear; }
@@ -63,6 +62,7 @@
         .mining-section { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
         .bread-btn { font-size: 160px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 35px rgba(245,158,11,0.4)); -webkit-tap-highlight-color: transparent; }
         .bread-btn:active { transform: scale(0.85); }
+        .bread-btn.disabled { opacity: 0.3; filter: grayscale(1); cursor: not-allowed; pointer-events: none; }
 
         .plus-number { 
             position: absolute; color: var(--primary); font-weight: 900; 
@@ -178,6 +178,7 @@
     let pps = parseFloat(localStorage.getItem('dbakery_pps')) || 0;
     let hornos = JSON.parse(localStorage.getItem('dbakery_inv')) || { casero: 0, industrial: 0, maestro: 0 };
     let energy = 1000;
+    let isRecharging = false; // Nueva variable para bloquear el minado
     
     let claimablePassive = parseFloat(localStorage.getItem('dbakery_claimable')) || 0;
 
@@ -192,7 +193,6 @@
     tg.expand();
 
     window.addEventListener('load', () => {
-        // Ajuste de tiempo para mostrar la portada (3.5 segundos)
         document.getElementById('progress').style.width = '100%';
         updateUI();
         actualizarPanaderia();
@@ -214,9 +214,18 @@
 
     document.getElementById('mine-btn').addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if (energy > 0) {
+        // Solo permite minar si hay energía y NO se está recargando tras quedar en 0
+        if (energy > 0 && !isRecharging) {
             balance += 0.000000001; 
             energy -= 1;
+            
+            // Si llega a 0, activa el bloqueo de recarga
+            if (energy <= 0) {
+                energy = 0;
+                isRecharging = true;
+                document.getElementById('mine-btn').classList.add('disabled');
+            }
+
             const touch = e.changedTouches[0];
             showPlus(touch.clientX, touch.clientY);
             updateUI();
@@ -312,7 +321,16 @@
     }
 
     setInterval(() => {
-        if (energy < 1000) energy++;
+        // La energía se recupera 1 por segundo
+        if (energy < 1000) {
+            energy++;
+            // Desbloquea el botón solo cuando la energía se llene al 100%
+            if (isRecharging && energy >= 1000) {
+                isRecharging = false;
+                document.getElementById('mine-btn').classList.remove('disabled');
+            }
+        }
+        
         if (pps > 0) {
             claimablePassive += pps;
         }
