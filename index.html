@@ -133,9 +133,9 @@
 
     <div id="view-shop" class="view">
         <header><div class="app-title">Upgrade Crypto Equipment</div></header>
-        <div class="item-card"><div style="font-size: 2rem;">₿</div><div class="item-info"><h4>Miner Casero</h4><p>+1.000000000 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000005 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 1.0)">COMPRAR</button></div>
-        <div class="item-card"><div style="font-size: 2rem;">Ξ</div><div class="item-info"><h4>Miner Industrial Pro</h4><p>+10.000000000 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000050 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 10.0)">COMPRAR</button></div>
-        <div class="item-card"><div style="font-size: 2rem;">☀️</div><div class="item-info"><h4>Miner Maestro Vulcano</h4><p>+100.000000000 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000500 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 100.0)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">₿</div><div class="item-info"><h4>Miner Casero</h4><p>+0.000000001 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000005 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 0.000000001)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">Ξ</div><div class="item-info"><h4>Miner Industrial Pro</h4><p>+0.000000010 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000050 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 0.000000010)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">☀️</div><div class="item-info"><h4>Miner Maestro Vulcano</h4><p>+0.000000100 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000500 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 0.000000100)">COMPRAR</button></div>
     </div>
 
     <div id="view-invest" class="view">
@@ -260,10 +260,10 @@
             save(); 
             updateUI();
             actualizarPanaderia();
-            tg.showAlert("¡Horno activado correctamente! La producción pasiva ha aumentado.");
+            tg.showAlert("¡Felicidades! El horno automático se ha activado con éxito.");
             tg.HapticFeedback.notificationOccurred('success');
         } else {
-            tg.showAlert("Falta $PAN minado con el dedo.");
+            tg.showAlert("Saldo insuficiente de $PAN.");
             tg.HapticFeedback.notificationOccurred('error');
         }
     }
