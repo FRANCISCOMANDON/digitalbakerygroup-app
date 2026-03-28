@@ -30,7 +30,6 @@
 
         .top-bar { display: flex; justify-content: flex-end; padding: 15px; z-index: 1000; min-height: 50px; }
 
-        /* PANTALLA DE CARGA CON LA NUEVA PORTADA - AJUSTADA */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg) url('portada.jpg') no-repeat center;
@@ -50,7 +49,6 @@
         .balance-container { font-size: 2.3rem; font-weight: 900; color: white; font-family: 'Courier New', monospace; margin: 8px 0; text-shadow: 0 0 15px rgba(245,158,11,0.5); }
         .pps-badge { font-size: 0.75rem; color: var(--success); background: rgba(16, 185, 129, 0.15); padding: 5px 14px; border-radius: 20px; font-weight: bold; display: inline-block; border: 1px solid rgba(16, 185, 129, 0.2); }
 
-        /* ESTANTES DE CRIPTO-PANADERÍA VIRTUAL */
         .bakery-display { 
             background: rgba(30, 41, 59, 0.5); border-radius: 20px; margin: 10px 20px; padding: 12px;
             display: flex; justify-content: center; gap: 18px; border: 1px solid rgba(255,255,255,0.05);
@@ -135,9 +133,9 @@
 
     <div id="view-shop" class="view">
         <header><div class="app-title">Upgrade Crypto Equipment</div></header>
-        <div class="item-card"><div style="font-size: 2rem;">₿</div><div class="item-info"><h4>Miner Casero</h4><p>+0.000000010 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000005 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 0.00000001)">COMPRAR</button></div>
-        <div class="item-card"><div style="font-size: 2rem;">Ξ</div><div class="item-info"><h4>Miner Industrial Pro</h4><p>+0.000000100 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000050 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 0.0000001)">COMPRAR</button></div>
-        <div class="item-card"><div style="font-size: 2rem;">☀️</div><div class="item-info"><h4>Miner Maestro Vulcano</h4><p>+0.000001000 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000500 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 0.000001)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">₿</div><div class="item-info"><h4>Miner Casero</h4><p>+1.000000000 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000005 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 1.0)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">Ξ</div><div class="item-info"><h4>Miner Industrial Pro</h4><p>+10.000000000 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000050 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 10.0)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">☀️</div><div class="item-info"><h4>Miner Maestro Vulcano</h4><p>+100.000000000 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000500 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 100.0)">COMPRAR</button></div>
     </div>
 
     <div id="view-invest" class="view">
@@ -178,7 +176,7 @@
     let pps = parseFloat(localStorage.getItem('dbakery_pps')) || 0;
     let hornos = JSON.parse(localStorage.getItem('dbakery_inv')) || { casero: 0, industrial: 0, maestro: 0 };
     let energy = 1000;
-    let isRecharging = false; // Nueva variable para bloquear el minado
+    let isRecharging = false;
     
     let claimablePassive = parseFloat(localStorage.getItem('dbakery_claimable')) || 0;
 
@@ -214,12 +212,10 @@
 
     document.getElementById('mine-btn').addEventListener('touchstart', (e) => {
         e.preventDefault();
-        // Solo permite minar si hay energía y NO se está recargando tras quedar en 0
         if (energy > 0 && !isRecharging) {
             balance += 0.000000001; 
             energy -= 1;
             
-            // Si llega a 0, activa el bloqueo de recarga
             if (energy <= 0) {
                 energy = 0;
                 isRecharging = true;
@@ -264,6 +260,7 @@
             save(); 
             updateUI();
             actualizarPanaderia();
+            tg.showAlert("¡Horno activado correctamente! La producción pasiva ha aumentado.");
             tg.HapticFeedback.notificationOccurred('success');
         } else {
             tg.showAlert("Falta $PAN minado con el dedo.");
@@ -321,10 +318,8 @@
     }
 
     setInterval(() => {
-        // La energía se recupera 1 por segundo
         if (energy < 1000) {
             energy++;
-            // Desbloquea el botón solo cuando la energía se llene al 100%
             if (isRecharging && energy >= 1000) {
                 isRecharging = false;
                 document.getElementById('mine-btn').classList.remove('disabled');
