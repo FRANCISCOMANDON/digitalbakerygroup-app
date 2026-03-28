@@ -3,168 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Digital Bakery Group - Official</title>
+    <title>Digital Bakery Group - Virtual Crypto Bakery</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root { --primary: #f59e0b; --bg: #020617; --success: #10b981; --ton: #0088cc; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--bg); color: var(--text); overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
+        :root {
+            --primary: #f59e0b;
+            --bg: #020617;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --ton: #0088cc;
+            --success: #10b981;
+            --accent: #8b5cf6;
+            --gold: #facc15;
+            --diamond: #06b6d4;
+        }
 
-        /* PANTALLA DE CARGA - AHORA TOTALMENTE ILUMINADA */
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0; background-color: var(--bg); color: var(--text);
+            overflow: hidden; display: flex; flex-direction: column; height: 100vh;
+            -webkit-user-select: none; user-select: none;
+        }
+
+        .top-bar { display: flex; justify-content: flex-end; padding: 15px; z-index: 1000; min-height: 50px; }
+
+        /* PORTADA ILUMINADA (Sin capa oscura) */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000 url('portada.jpg') no-repeat center;
+            background: var(--bg) url('portada.jpg') no-repeat center;
             background-size: cover; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-            padding-bottom: 80px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        /* Eliminamos el overlay oscuro para que la imagen brille */
-        .loader-bar { width: 70%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        /* Eliminamos el ::before que oscurecía la imagen */
+        
+        .loader-bar { width: 220px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 10px; margin-top: 25px; overflow: hidden; }
         .loader-progress { width: 0%; height: 100%; background: var(--primary); transition: width 3.5s linear; }
 
-        #main-content { display: none; flex-direction: column; height: 100%; opacity: 0; transition: opacity 0.6s; }
-        .view { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 120px; }
+        #main-content { display: none; flex-direction: column; height: 100%; opacity: 0; transition: opacity 0.5s; }
+        .view { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 130px; }
         .view.active { display: flex; }
 
-        header { padding: 20px; text-align: center; }
-        .balance-container { font-size: 2.5rem; font-weight: 900; text-shadow: 0 0 20px rgba(245,158,11,0.6); }
+        /* BLOQUEO DE UI MIENTRAS CARGA */
+        .disabled-ui { pointer-events: none; opacity: 0.6; }
 
-        /* UI BLOCKED STATE */
-        .disabled-ui { opacity: 0.5; pointer-events: none; }
+        header { padding: 10px 20px; text-align: center; }
+        .app-title { font-size: 0.85rem; font-weight: 800; color: var(--primary); letter-spacing: 1.8px; text-transform: uppercase; }
+        .balance-container { font-size: 2.3rem; font-weight: 900; color: white; font-family: 'Courier New', monospace; margin: 8px 0; text-shadow: 0 0 15px rgba(245,158,11,0.5); }
+        .pps-badge { font-size: 0.75rem; color: var(--success); background: rgba(16, 185, 129, 0.15); padding: 5px 14px; border-radius: 20px; font-weight: bold; display: inline-block; border: 1px solid rgba(16, 185, 129, 0.2); }
 
-        .item-card, .invest-card { 
-            background: rgba(30, 41, 59, 0.7); border-radius: 20px; margin: 10px 15px; padding: 20px; 
-            border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+        .bakery-display { 
+            background: rgba(30, 41, 59, 0.5); border-radius: 20px; margin: 10px 20px; padding: 12px;
+            display: flex; justify-content: center; gap: 18px; border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
         }
-        .btn-buy, .btn-invest { 
-            background: var(--primary); color: white; border: none; padding: 12px; 
-            border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; 
-        }
+        .bakery-item { font-size: 1.3rem; opacity: 0.2; filter: grayscale(1); transition: 0.4s ease-out; }
+        .bakery-item.active { opacity: 1; filter: grayscale(0) drop-shadow(0 0 8px var(--primary)); }
 
-        .legal-note { font-size: 0.65rem; color: #94a3b8; margin-top: 10px; line-height: 1.3; text-align: left; }
+        .mining-section { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
+        .bread-btn { font-size: 160px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 35px rgba(245,158,11,0.4)); -webkit-tap-highlight-color: transparent; }
+        .bread-btn:active { transform: scale(0.85); }
+
+        .plus-number { 
+            position: absolute; color: var(--primary); font-weight: 900; 
+            font-size: 1.8rem; font-family: Arial, sans-serif; pointer-events: none; 
+            animation: floatUp 0.8s ease-out forwards; z-index: 100; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-180px); opacity: 0; } }
+
+        .item-card { 
+            background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 20px; margin: 10px 15px; 
+            padding: 18px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 18px;
+        }
+        .item-info { flex: 1; }
+        .item-info h4 { margin: 0; font-size: 0.95rem; font-weight: bold; color: white; }
+        .item-info p { margin: 5px 0 10px 0; font-size: 0.7rem; color: #94a3b8; }
+        .btn-buy { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+
+        .invest-card { 
+            background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 20px; margin: 12px 15px; 
+            padding: 22px; border: 1px solid rgba(255,255,255,0.05); text-align: center;
+        }
+        .invest-price { font-size: 1.4rem; font-weight: 800; color: var(--success); display: block; margin-bottom: 5px; }
+        .legal-box { font-size: 0.65rem; color: #94a3b8; text-align: left; margin-top: 10px; line-height: 1.2; }
+        .btn-invest { background: var(--ton); color: white; border: none; padding: 14px; width: 100%; border-radius: 16px; font-weight: 800; cursor: pointer; margin-top: 15px; }
 
         footer { 
-            position: fixed; bottom: 0; width: 100%; background: rgba(15, 23, 42, 0.95); 
-            padding: 20px 0; display: flex; justify-content: space-around; border-top: 1px solid rgba(255,255,255,0.1);
+            position: fixed; bottom: 0; width: 100%; background: rgba(15, 23, 42, 0.98); 
+            padding: 18px 0; display: flex; justify-content: space-around; 
+            border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; backdrop-filter: blur(10px);
         }
-        .nav-item { color: #64748b; text-align: center; font-size: 0.7rem; flex: 1; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        
-        /* NOTIFICACIÓN FLOTANTE */
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--success); color: white; padding: 10px 25px;
-            border-radius: 50px; font-weight: bold; display: none; z-index: 10000;
-        }
+        .nav-item { color: #64748b; text-align: center; font-size: 0.65rem; flex: 1; cursor: pointer; text-decoration: none; }
+        .nav-item.active { color: var(--primary); transform: translateY(-2px); transition: transform 0.2s; }
+        .nav-item i { display: block; font-size: 1.4rem; margin-bottom: 6px; }
     </style>
 </head>
 <body>
 
-<div id="toast">¡Horno Activado! 🚀</div>
-
 <div id="loader">
+    <h1 style="color: var(--primary); letter-spacing: 4px; font-weight: 900; font-size: 1.8rem; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">DIGITAL BAKERY</h1>
     <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
 </div>
 
 <div id="main-content">
-    <div style="display:flex; justify-content:flex-end; padding:10px;"><div id="ton-connect-btn"></div></div>
+    <div class="top-bar"><div id="ton-connect-btn"></div></div>
 
     <div id="view-mine" class="view active">
         <header>
-            <div style="color:var(--primary); font-weight:bold; letter-spacing:1px;">MY BALANCE</div>
+            <div class="app-title">Crypto Factory</div>
             <div class="balance-container" id="balance">0.000000000</div>
-            <div id="pps-display" style="color:var(--success); font-weight:bold;">+0.00 $PAN/s</div>
+            <div id="pps-display" class="pps-badge">+0.00 $PAN / s</div>
         </header>
 
-        <div style="flex:1; display:flex; justify-content:center; align-items:center; position:relative;">
-            <div id="mine-btn" style="font-size:150px; cursor:pointer; transition:transform 0.1s;" class="disabled-ui">🍞</div>
+        <div class="bakery-display">
+            <span class="bakery-item" id="icon-casero">₿</span> <span class="bakery-item" id="icon-industrial">Ξ</span> <span class="bakery-item" id="icon-maestro">☀️</span> </div>
+
+        <div class="mining-section"><div class="bread-btn disabled-ui" id="mine-btn">🍞</div></div>
+
+        <div style="padding: 10px 20px; text-align: center;">
+            <button class="btn-buy" id="claim-btn" style="background: var(--success); width: 85%; padding: 12px; font-size: 0.9rem;">
+                <i class="fas fa-hand-holding-usd"></i> Cobrar $PAN Pasivos (<span id="claimable-val">0.00</span>)
+            </button>
         </div>
 
-        <div style="padding: 20px;" id="energy-section" class="disabled-ui">
-            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px;">
-                <span>ENERGÍA DISPONIBLE</span><span id="energy-text">1000/1000</span>
+        <div style="padding: 15px; text-align: center;" id="energy-container" class="disabled-ui">
+            <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.75rem; font-weight: bold; color: #94a3b8; margin-bottom: 6px;">
+                <span>ENERGÍA DE HORNO</span><span id="energy-text">1000/1000</span>
             </div>
-            <div style="width:100%; height:8px; background:#1e293b; border-radius:10px; overflow:hidden;">
-                <div id="energy-fill" style="width:100%; height:100%; background:var(--primary);"></div>
-            </div>
+            <div style="width: 85%; height: 7px; background: #1e293b; border-radius: 10px; margin: 0 auto; overflow: hidden;"><div id="energy-fill" style="height: 100%; background: var(--primary); width: 100%;"></div></div>
         </div>
     </div>
 
     <div id="view-shop" class="view">
-        <header><h3>ADQUIRIR HORNOS</h3></header>
-        <div class="item-card">
-            <h4>Horno Básico</h4>
-            <p style="color:var(--success)">Producción: 1.00 $PAN / seg</p>
-            <button class="btn-buy" onclick="comprarHorno('Básico', 100, 1)">ACTIVAR (100 $PAN)</button>
-        </div>
-        <div class="item-card">
-            <h4>Horno Industrial</h4>
-            <p style="color:var(--success)">Producción: 10.00 $PAN / seg</p>
-            <button class="btn-buy" onclick="comprarHorno('Industrial', 1000, 10)">ACTIVAR (1000 $PAN)</button>
-        </div>
-        <div class="item-card">
-            <h4>Master Factory</h4>
-            <p style="color:var(--success)">Producción: 100.00 $PAN / seg</p>
-            <button class="btn-buy" onclick="comprarHorno('Master', 10000, 100)">ACTIVAR (10000 $PAN)</button>
-        </div>
+        <header><div class="app-title">Upgrade Crypto Equipment</div></header>
+        <div class="item-card"><div style="font-size: 2rem;">₿</div><div class="item-info"><h4>Miner Casero</h4><p>+1.00 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">100 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('casero', 100, 1)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">Ξ</div><div class="item-info"><h4>Miner Industrial Pro</h4><p>+10.00 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">1000 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('industrial', 1000, 10)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">☀️</div><div class="item-info"><h4>Miner Maestro Vulcano</h4><p>+100.00 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">10000 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('maestro', 10000, 100)">COMPRAR</button></div>
     </div>
 
     <div id="view-invest" class="view">
-        <header><h3>PLANES DE INVERSIÓN USDT</h3></header>
+        <header><div class="app-title">Crowdfunding Blockchain</div></header>
         <div class="invest-card">
-            <div style="font-size:1.5rem; font-weight:bold; color:var(--success);">DESDE 10 USDT</div>
-            <p style="font-size:0.8rem; color:#94a3b8;">Participa en el Crowdfunding de Digital Bakery Group.</p>
-            <div class="legal-note">
-                • <b>Retornos:</b> Las ganancias son variables según la producción real.<br>
-                • <b>Bloqueo:</b> El capital queda bloqueado por un mínimo de <b>3 meses</b>.<br>
-                • <b>Retiros:</b> Las utilidades generadas pueden retirarse mensualmente.
+            <span class="invest-price">Desde 10 USDT</span>
+            <div style="color: var(--success); font-weight:bold; font-size:0.8rem">Planes de Participación Directa</div>
+            <div class="legal-box">
+                • Los resultados de ganancias son <b>variables</b> según producción.<br>
+                • El capital depositado queda <b>bloqueado</b> por un mínimo de 3 meses.<br>
+                • Las ganancias acumuladas se pueden <b>retirar mensualmente</b>.
             </div>
-            <button class="btn-invest" onclick="pagarConWallet(10)" style="margin-top:15px;">INVERTIR AHORA</button>
+            <button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR AHORA</button>
         </div>
-    </div>
+        </div>
 
     <div id="view-friends" class="view">
-        <header><h3>PROGRAMA DE REFERIDOS</h3></header>
-        <div class="item-card" style="text-align:center;">
-            <i class="fas fa-users" style="font-size:3rem; color:var(--primary); margin-bottom:15px;"></i>
-            <p>Comparte tu link y gana 500 $PAN por cada nuevo miembro.</p>
-            <button class="btn-buy" onclick="compartir()">COMPARTIR MI LINK</button>
+        <header><div class="app-title">Global Cripto Network</div></header>
+        <div style="text-align:center; padding: 40px 20px; background: linear-gradient(180deg, #1e293b, #020617); border-radius: 24px; margin: 20px;">
+            <i class="fas fa-users" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h3>Invita Amigos</h3>
+            <p style="color:#94a3b8; font-size: 0.85rem; line-height: 1.5;">Gana recompensas por cada nuevo socio blockchain que se una a Digital Bakery Group con tu enlace.</p>
+            <div style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; display: inline-block; margin: 15px 0;">+500 $PAN por amigo</div>
+            <button class="btn-usdt" onclick="compartir()" style="background: var(--primary); margin-top: 20px;">COMPARTIR LINK</button>
         </div>
     </div>
 
     <footer>
-        <div class="nav-item active" onclick="switchView('view-mine', this)"><i class="fas fa-bread-slice"></i><br>MINAR</div>
-        <div class="nav-item" onclick="switchView('view-shop', this)"><i class="fas fa-store"></i><br>HORNOS</div>
-        <div class="nav-item" onclick="switchView('view-invest', this)"><i class="fas fa-chart-line"></i><br>INVERTIR</div>
-        <div class="nav-item" onclick="switchView('view-friends', this)"><i class="fas fa-user-plus"></i><br>AMIGOS</div>
+        <div class="nav-item active" onclick="switchView('view-mine', this)"><i class="fas fa-microchip"></i>FACTORY</div>
+        <div class="nav-item" onclick="switchView('view-shop', this)"><i class="fas fa-tools"></i>EQUIPOS</div>
+        <div class="nav-item" onclick="switchView('view-invest', this)"><i class="fas fa-coins"></i>USDT</div>
+        <div class="nav-item" onclick="switchView('view-friends', this)"><i class="fas fa-user-friends"></i>AMIGOS</div>
     </footer>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
-    let balance = parseFloat(localStorage.getItem('db_bal')) || 0;
-    let pps = parseFloat(localStorage.getItem('db_pps')) || 0;
+    const storageKey = 'dbakery_val_v7_final';
+    
+    let balance = parseFloat(localStorage.getItem(storageKey)) || 0;
+    let pps = parseFloat(localStorage.getItem('dbakery_pps')) || 0;
+    let hornos = JSON.parse(localStorage.getItem('dbakery_inv')) || { casero: 0, industrial: 0, maestro: 0 };
     let energy = 1000;
+    let claimablePassive = parseFloat(localStorage.getItem('dbakery_claimable')) || 0;
+
+    let tonConnectUI;
+    try {
+        tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp/main/public/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect-btn'
+        });
+    } catch(e) {}
 
     tg.expand();
 
     window.addEventListener('load', () => {
         document.getElementById('progress').style.width = '100%';
         updateUI();
+        actualizarPanaderia();
         
-        // Loader de 3.5 segundos para apreciar la imagen
+        // Tiempo de carga extendido a 3.5s para visualización de marca
         setTimeout(() => {
-            document.getElementById('loader').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('main-content').style.display = 'flex';
-                document.getElementById('main-content').style.opacity = '1';
-                // Desbloqueamos la UI
-                document.getElementById('mine-btn').classList.remove('disabled-ui');
-                document.getElementById('energy-section').classList.remove('disabled-ui');
-            }, 600);
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+            document.getElementById('main-content').style.opacity = '1';
+            // Desbloqueo de UI
+            document.getElementById('mine-btn').classList.remove('disabled-ui');
+            document.getElementById('energy-container').classList.remove('disabled-ui');
         }, 3500);
     });
 
@@ -173,65 +217,113 @@
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById(viewId).classList.add('active');
         el.classList.add('active');
+        tg.HapticFeedback.impactOccurred('light');
     }
 
-    // Minado Gratis (Ajustado para no ser tan veloz)
+    // Minado Gratis (Ajustado para ser sostenible)
     document.getElementById('mine-btn').addEventListener('touchstart', (e) => {
         e.preventDefault();
         if (energy > 0) {
-            balance += 0.00000005; // Ajustado
-            energy -= 2;
-            tg.HapticFeedback.impactOccurred('medium');
+            balance += 0.00000005; // Ajuste de velocidad
+            energy -= 2; // Consumo más realista
+            const touch = e.changedTouches[0];
+            showPlus(touch.clientX, touch.clientY);
             updateUI();
+            tg.HapticFeedback.impactOccurred('medium');
         }
     });
 
-    function comprarHorno(nombre, costo, produccion) {
-        if (balance >= costo) {
-            balance -= costo;
-            pps += produccion;
-            showToast(`¡${nombre} Activado! 🚀`);
+    document.getElementById('claim-btn').addEventListener('click', () => {
+        if (claimablePassive > 0) {
+            balance += claimablePassive;
+            claimablePassive = 0;
             save();
             updateUI();
+            tg.showAlert("¡Has cobrado tus ganancias pasivas!");
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+    });
+
+    function showPlus(x, y) {
+        const p = document.createElement('div');
+        p.className = 'plus-number';
+        p.innerText = '+1';
+        p.style.left = (x - 20) + 'px';
+        p.style.top = (y - 40) + 'px';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+    }
+
+    function comprarHorno(tipo, costo, produccion) {
+        if (balance >= costo) {
+            balance -= costo;
+            hornos[tipo]++;
+            pps += produccion;
+            save(); 
+            updateUI();
+            actualizarPanaderia();
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.showAlert(`¡Horno ${tipo} Activado con éxito! 🚀`);
         } else {
-            tg.showAlert("Necesitas más $PAN para esta inversión.");
+            tg.showAlert("Falta saldo de minado para activar este equipo.");
         }
     }
 
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
+    function actualizarPanaderia() {
+        if(hornos.casero > 0) document.getElementById('icon-casero').classList.add('active');
+        if(hornos.industrial > 0) document.getElementById('icon-industrial').classList.add('active');
+        if(hornos.maestro > 0) document.getElementById('icon-maestro').classList.add('active');
     }
 
     function updateUI() {
         document.getElementById('balance').innerText = balance.toFixed(9);
-        document.getElementById('pps-display').innerText = `+${pps.toFixed(2)} $PAN/s`;
+        document.getElementById('pps-display').innerText = `+${pps.toFixed(2)} $PAN / s`;
         document.getElementById('energy-text').innerText = `${Math.max(0, energy)}/1000`;
         document.getElementById('energy-fill').style.width = (energy/10) + '%';
+        document.getElementById('claimable-val').innerText = claimablePassive.toFixed(2);
     }
 
     function save() {
-        localStorage.setItem('db_bal', balance);
-        localStorage.setItem('db_pps', pps);
+        localStorage.setItem(storageKey, balance);
+        localStorage.setItem('dbakery_pps', pps);
+        localStorage.setItem('dbakery_inv', JSON.stringify(hornos));
+        localStorage.setItem('dbakery_claimable', claimablePassive);
     }
 
-    // LINK DE REFERIDO CORREGIDO PARA TELEGRAM
+    // CORRECCIÓN LINK REFERIDO (startapp)
     function compartir() {
-        const uid = tg.initDataUnsafe?.user?.id || "user";
-        // IMPORTANTE: Cambia 'DigitalBakeryGroup_BOT' por el nombre real de tu bot
-        const botUser = "DigitalBakeryGroup_BOT"; 
-        const link = `https://t.me/${botUser}/DigitalBakeryGroup?startapp=${uid}`;
-        const text = `¡Únete a la nueva era del pan digital en Digital Bakery Group! 🚀`;
+        const uid = tg.initDataUnsafe?.user?.id || "admin";
+        const botUsername = "DigitalBakeryGroup_BOT";
+        const link = `https://t.me/${botUsername}/DigitalBakeryGroup?startapp=${uid}`;
+        const text = `¡Únete a Digital Bakery Group! Mina $PAN y obtén ganancias reales. 🚀`;
         tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
     }
 
+    async function pagarConWallet(monto) {
+        if (!tonConnectUI.connected) {
+            tg.showAlert("Conecta tu Wallet TON para procesar la inversión.");
+            return;
+        }
+        const transaction = {
+            validUntil: Math.floor(Date.now() / 1000) + 60,
+            messages: [{
+                address: "UQCWJafwk-4iQJkxDjqaBD4NB4cBmswgGJVENe-HyCaO2FAV",
+                amount: (monto * 1000000000).toString() 
+            }]
+        };
+        try {
+            await tonConnectUI.sendTransaction(transaction);
+            tg.showAlert("Inversión enviada. Procesaremos tu participación en 24h.");
+        } catch (e) {
+            tg.showAlert("Transacción cancelada.");
+        }
+    }
+
     setInterval(() => {
-        if (energy < 1000) energy += 1;
-        if (pps > 0) balance += (pps / 10); // Suma proporcional cada 100ms
-        updateUI();
+        if (energy < 1000) energy++;
+        if (pps > 0) claimablePassive += (pps/10); // Actualización más fluida cada 100ms
         save();
+        updateUI();
     }, 100);
 </script>
 
