@@ -183,7 +183,6 @@
     const tg = window.Telegram.WebApp;
     const storageKey = 'dbakery_val_v6_restored';
     
-    // Variables iniciales
     let balance = 0;
     let pps = 0;
     let hornos = { casero: 0, industrial: 0, maestro: 0 };
@@ -191,7 +190,7 @@
     let isRecharging = false;
     let claimablePassive = 0;
 
-    // CARGAR DATOS (Punto 1 y 2)
+    // CARGAR DATOS
     function load() {
         const savedBalance = localStorage.getItem(storageKey);
         if (savedBalance !== null) {
@@ -202,16 +201,29 @@
             energy = parseInt(localStorage.getItem('dbakery_energy') || 1000);
             isRecharging = localStorage.getItem('dbakery_recharging') === 'true';
             
-            // Si quedó en recarga al cerrar, mantenerlo bloqueado
             if (isRecharging && energy < 1000) {
                 document.getElementById('mine-btn').classList.add('disabled');
             } else {
                 isRecharging = false;
             }
         }
+        
+        // LOGICA DE REFERIDO (Punto 3)
+        // Detectar si el usuario viene por link de referido
+        const startParam = tg.initDataUnsafe?.start_param;
+        const alreadyReferred = localStorage.getItem('dbakery_referred_done');
+
+        if (startParam && !alreadyReferred) {
+            // Se le otorga el bono de bienvenida por usar el link
+            balance += 0.000005000; 
+            localStorage.setItem('dbakery_referred_done', 'true');
+            save();
+            setTimeout(() => {
+                tg.showAlert("¡Bono de referido activado! Has recibido +0.000005000 $PAN");
+            }, 4000);
+        }
     }
 
-    // Ejecutar carga antes de mostrar nada
     load();
 
     let tonConnectUI;
@@ -259,7 +271,7 @@
             const touch = e.changedTouches[0];
             showPlus(touch.clientX, touch.clientY);
             updateUI();
-            save(); // Guardar inmediatamente al minar
+            save(); 
             tg.HapticFeedback.impactOccurred('light');
         }
     });
@@ -329,6 +341,7 @@
     function compartir() {
         const uid = tg.initDataUnsafe?.user?.id || "admin";
         const botUsername = "DigitalBakeryGroup_BOT";
+        // El formato startapp es el estándar para Mini Apps de Telegram
         const link = `https://t.me/${botUsername}/app?startapp=${uid}`;
         const text = `¡Únete a Digital Bakery! Mina $PAN y construye tu imperio cripto conmigo. 🍞💰`;
         tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
