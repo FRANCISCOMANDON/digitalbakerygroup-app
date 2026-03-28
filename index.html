@@ -85,6 +85,11 @@
         .invest-price { font-size: 1.4rem; font-weight: 800; color: var(--success); display: block; margin-bottom: 5px; }
         .btn-invest { background: var(--ton); color: white; border: none; padding: 14px; width: 100%; border-radius: 16px; font-weight: 800; cursor: pointer; margin-top: 15px; }
 
+        .policy-note {
+            background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 15px; margin: 15px; padding: 15px; font-size: 0.75rem; color: #cbd5e1; line-height: 1.4;
+        }
+
         footer { 
             position: fixed; bottom: 0; width: 100%; background: rgba(15, 23, 42, 0.98); 
             padding: 18px 0; display: flex; justify-content: space-around; 
@@ -140,6 +145,12 @@
 
     <div id="view-invest" class="view">
         <header><div class="app-title">Crowdfunding Blockchain</div></header>
+        
+        <div class="policy-note">
+            <i class="fas fa-info-circle" style="color: var(--primary);"></i> <b>Información Importante:</b><br>
+            Los resultados de ganancias son <b>variables</b>. El capital depositado queda bloqueado por un periodo mínimo de <b>3 meses</b>. Las ganancias generadas pueden ser retiradas de forma <b>mensual</b>.
+        </div>
+
         <div class="invest-card"><span class="invest-price">1 USDT</span><div style="color: var(--success); font-weight:bold; font-size:0.8rem">Pack Semilla🌾</div><button class="btn-invest" onclick="pagarConWallet(1)">INVERTIR</button></div>
         <div class="invest-card"><span class="invest-price">10 USDT</span><div style="color: var(--ton); font-weight:bold; font-size:0.8rem">Pack Amasadora 🥯</div><button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR</button></div>
         <div class="invest-card"><span class="invest-price">50 USDT</span><div style="color: var(--accent); font-weight:bold; font-size:0.8rem">Socio Mayoritario 💎</div><button class="btn-invest" onclick="pagarConWallet(50)" style="background:var(--accent);">INVERTIR</button></div>
@@ -172,13 +183,16 @@
     const tg = window.Telegram.WebApp;
     const storageKey = 'dbakery_val_v6_restored';
     
-    let balance = parseFloat(localStorage.getItem(storageKey)) || 0;
-    let pps = parseFloat(localStorage.getItem('dbakery_pps')) || 0;
-    let hornos = JSON.parse(localStorage.getItem('dbakery_inv')) || { casero: 0, industrial: 0, maestro: 0 };
+    // Valores restablecidos a CERO para la interfaz
+    let balance = 0;
+    let pps = 0;
+    let hornos = { casero: 0, industrial: 0, maestro: 0 };
     let energy = 1000;
     let isRecharging = false;
-    
-    let claimablePassive = parseFloat(localStorage.getItem('dbakery_claimable')) || 0;
+    let claimablePassive = 0;
+
+    // Guardar inmediatamente los valores en cero para limpiar el storage previo
+    save();
 
     let tonConnectUI;
     try {
