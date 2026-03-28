@@ -183,6 +183,7 @@
     const tg = window.Telegram.WebApp;
     const storageKey = 'dbakery_val_v6_restored';
     
+    // Variables iniciales
     let balance = 0;
     let pps = 0;
     let hornos = { casero: 0, industrial: 0, maestro: 0 };
@@ -190,7 +191,28 @@
     let isRecharging = false;
     let claimablePassive = 0;
 
-    save();
+    // CARGAR DATOS (Punto 1 y 2)
+    function load() {
+        const savedBalance = localStorage.getItem(storageKey);
+        if (savedBalance !== null) {
+            balance = parseFloat(savedBalance);
+            pps = parseFloat(localStorage.getItem('dbakery_pps') || 0);
+            hornos = JSON.parse(localStorage.getItem('dbakery_inv') || '{"casero":0,"industrial":0,"maestro":0}');
+            claimablePassive = parseFloat(localStorage.getItem('dbakery_claimable') || 0);
+            energy = parseInt(localStorage.getItem('dbakery_energy') || 1000);
+            isRecharging = localStorage.getItem('dbakery_recharging') === 'true';
+            
+            // Si quedó en recarga al cerrar, mantenerlo bloqueado
+            if (isRecharging && energy < 1000) {
+                document.getElementById('mine-btn').classList.add('disabled');
+            } else {
+                isRecharging = false;
+            }
+        }
+    }
+
+    // Ejecutar carga antes de mostrar nada
+    load();
 
     let tonConnectUI;
     try {
@@ -237,6 +259,7 @@
             const touch = e.changedTouches[0];
             showPlus(touch.clientX, touch.clientY);
             updateUI();
+            save(); // Guardar inmediatamente al minar
             tg.HapticFeedback.impactOccurred('light');
         }
     });
@@ -299,18 +322,15 @@
         localStorage.setItem('dbakery_pps', pps.toFixed(9));
         localStorage.setItem('dbakery_inv', JSON.stringify(hornos));
         localStorage.setItem('dbakery_claimable', claimablePassive.toFixed(9));
+        localStorage.setItem('dbakery_energy', energy.toString());
+        localStorage.setItem('dbakery_recharging', isRecharging.toString());
     }
 
     function compartir() {
         const uid = tg.initDataUnsafe?.user?.id || "admin";
         const botUsername = "DigitalBakeryGroup_BOT";
-        // El formato oficial para que el link abra directamente la Mini App es:
-        // https://t.me/nombre_del_bot/nombre_app?startapp=parametro
-        // Nota: Asegúrate de que el "nombre_app" sea el nombre corto que pusiste en BotFather
         const link = `https://t.me/${botUsername}/app?startapp=${uid}`;
         const text = `¡Únete a Digital Bakery! Mina $PAN y construye tu imperio cripto conmigo. 🍞💰`;
-        
-        // Usamos share url oficial de Telegram
         tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
     }
 
