@@ -35,7 +35,7 @@
             color: white; padding: 10px; border-radius: 12px; cursor: pointer; font-size: 1.2rem;
         }
 
-        /* MODAL Y TRADUCCIONES */
+        /* ESTILOS DEL MODAL DE AJUSTES Y FAQ */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
@@ -47,15 +47,11 @@
             max-height: 80vh; overflow-y: auto;
         }
         .modal-header { background: var(--primary); color: #2d1b0d; padding: 5px 20px; border-radius: 20px; display: inline-block; font-weight: 900; margin-bottom: 20px; }
-        
         .setting-item {
             background: #fef3c7; color: #2d1b0d; margin: 10px 0; padding: 12px 15px;
             border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
-            font-weight: bold; font-size: 0.85rem;
+            font-weight: bold; font-size: 0.9rem;
         }
-        
-        .lang-select { background: transparent; border: none; font-weight: bold; color: #2d1b0d; outline: none; }
-
         .faq-box {
             text-align: left; background: rgba(254, 243, 199, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);
             border-radius: 15px; padding: 15px; margin-top: 15px; font-size: 0.8rem; color: #fef3c7;
@@ -135,10 +131,6 @@
 </head>
 <body>
 
-<audio id="bg-music" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
-
 <div id="loader">
     <h1 style="color: var(--primary); letter-spacing: 4px; font-weight: 900; font-size: 1.8rem; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">DIGITAL BAKERY</h1>
     <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
@@ -147,24 +139,28 @@
 <div class="modal-overlay" id="settings-modal">
     <div class="modal-content">
         <div class="close-modal" onclick="toggleModal(false)">×</div>
-        <div class="modal-header" id="text-settings-title">AJUSTES Y FAQ</div>
+        <div class="modal-header">AJUSTES Y FAQ</div>
         
         <div class="setting-item">
-            <span id="text-lang-label">🌎 Idioma</span>
-            <select class="lang-select" id="lang-selector" onchange="changeLanguage()">
-                <option value="es">Español</option>
-                <option value="en">English</option>
-                <option value="pt">Português</option>
-            </select>
+            <span>🇪🇸 Idioma: Español</span>
+            <i class="fas fa-check-circle" style="color: var(--success)"></i>
         </div>
 
         <div class="setting-item">
-            <span id="text-music-label">🎵 Música</span>
-            <input type="checkbox" id="music-toggle" onchange="toggleMusic()">
+            <span>🎵 Música</span>
+            <input type="checkbox" id="music-toggle" checked onclick="tg.HapticFeedback.selectionChanged()">
         </div>
         
-        <div class="faq-box" id="faq-content">
-            </div>
+        <div class="faq-box">
+            <b>¿Qué es Digital Bakery?</b>
+            Es una incubadora de proyectos donde minas $PAN para aprender sobre inversiones blockchain y crowdfunding.
+            
+            <b>¿Cómo gano más $PAN?</b>
+            Usa el horno (clics), compra equipos automáticos en la tienda o invita a amigos con tu link.
+            
+            <b>¿Para qué sirve el USDT?</b>
+            Puedes invertir en packs de crowdfunding para apoyar la expansión del grupo y recibir rendimientos variables mensuales tras el periodo de bloqueo.
+        </div>
     </div>
 </div>
 
@@ -188,13 +184,13 @@
 
         <div style="padding: 10px 20px; text-align: center;">
             <button class="btn-buy" id="claim-btn" style="background: var(--success); width: 85%; padding: 12px; font-size: 0.9rem;">
-                <i class="fas fa-hand-holding-usd"></i> <span id="text-claim-btn">Cobrar $PAN Pasivos</span> (<span id="claimable-val">0.000000000</span>)
+                <i class="fas fa-hand-holding-usd"></i> Cobrar $PAN Pasivos (<span id="claimable-val">0.000000000</span>)
             </button>
         </div>
 
         <div style="padding: 15px; text-align: center;">
             <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.75rem; font-weight: bold; color: #94a3b8; margin-bottom: 6px;">
-                <span id="text-energy-label">ENERGÍA DE HORNO</span><span id="energy-text">1000/1000</span>
+                <span>ENERGÍA DE HORNO</span><span id="energy-text">1000/1000</span>
             </div>
             <div style="width: 85%; height: 7px; background: #1e293b; border-radius: 10px; margin: 0 auto; overflow: hidden;"><div id="energy-fill" style="height: 100%; background: var(--primary); width: 100%;"></div></div>
         </div>
@@ -209,19 +205,29 @@
 
     <div id="view-invest" class="view">
         <header><div class="app-title">Crowdfunding Blockchain</div></header>
-        <div class="policy-note" id="text-invest-note">
-             <b>Información Importante:</b> Resultados variables. Capital bloqueado 3 meses.
+        
+        <div class="policy-note">
+            <i class="fas fa-info-circle" style="color: var(--primary);"></i> <b>Información Importante:</b><br>
+            Los resultados de ganancias son <b>variables</b>. El capital depositado queda bloqueado por un periodo mínimo de <b>3 meses</b>. Las ganancias generadas pueden ser retiradas de forma <b>mensual</b>.
         </div>
+
         <div class="invest-card"><span class="invest-price">1 USDT</span><div style="color: var(--success); font-weight:bold; font-size:0.8rem">Pack Semilla🌾</div><button class="btn-invest" onclick="pagarConWallet(1)">INVERTIR</button></div>
         <div class="invest-card"><span class="invest-price">10 USDT</span><div style="color: var(--ton); font-weight:bold; font-size:0.8rem">Pack Amasadora 🥯</div><button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR</button></div>
+        <div class="invest-card"><span class="invest-price">50 USDT</span><div style="color: var(--accent); font-weight:bold; font-size:0.8rem">Socio Mayoritario 💎</div><button class="btn-invest" onclick="pagarConWallet(50)" style="background:var(--accent);">INVERTIR</button></div>
+        <div class="invest-card" style="border: 1px solid var(--gold);"><span class="invest-price">100 USDT</span><div style="color: var(--gold); font-weight:bold; font-size:0.8rem">Inversor Industrial 🏭</div><button class="btn-invest" onclick="pagarConWallet(100)" style="background:var(--gold); color:black;">INVERTIR</button></div>
+        <div class="invest-card" style="border: 1px solid var(--diamond);"><span class="invest-price">200 USDT</span><div style="color: var(--diamond); font-weight:bold; font-size:0.8rem">Socio Fundador 🚀</div><button class="btn-invest" onclick="pagarConWallet(200)" style="background:var(--diamond); color:black;">INVERTIR</button></div>
+        <div class="invest-card" style="border: 2px solid var(--accent);"><span class="invest-price">500 USDT</span><div style="color: var(--accent); font-weight:bold; font-size:0.8rem">Master Baker 👑</div><button class="btn-invest" onclick="pagarConWallet(500)" style="background:var(--accent);">INVERTIR</button></div>
+        <div class="invest-card" style="background: linear-gradient(to right, #facc15, #f59e0b);"><span class="invest-price" style="color:#000">1000 USDT</span><div style="color:#000; font-weight:900; font-size:0.85rem">👑 LEGENDARY INVESTOR 👑</div><button class="btn-invest" onclick="pagarConWallet(1000)" style="background:#000; color:#fff;">INVERTIR</button></div>
     </div>
 
     <div id="view-friends" class="view">
         <header><div class="app-title">Global Cripto Network</div></header>
         <div style="text-align:center; padding: 40px 20px; background: linear-gradient(180deg, #1e293b, #020617); border-radius: 24px; margin: 20px;">
             <i class="fas fa-users" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
-            <h3 id="text-friends-title">Invita Amigos</h3>
-            <button class="btn-buy" onclick="compartir()" id="text-share-btn" style="background: var(--primary); margin-top: 20px; width: 80%;">COMPARTIR LINK</button>
+            <h3>Invita Amigos</h3>
+            <p style="color:#94a3b8; font-size: 0.85rem; line-height: 1.5;">Gana recompensas por cada nuevo socio blockchain que se una a Digital Bakery Group con tu enlace.</p>
+            <div style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; display: inline-block; margin: 15px 0;">+0.000005000 $PAN por amigo</div>
+            <button class="btn-buy" onclick="compartir()" style="background: var(--primary); margin-top: 20px; width: 80%;">COMPARTIR LINK</button>
         </div>
     </div>
 
@@ -237,76 +243,19 @@
     const tg = window.Telegram.WebApp;
     const storageKey = 'dbakery_val_v6_restored';
     
-    // TRADUCCIONES
-    const i18n = {
-        es: {
-            settings: "AJUSTES Y FAQ", lang: "🌎 Idioma", music: "🎵 Música",
-            claim: "Cobrar $PAN Pasivos", energy: "ENERGÍA DE HORNO",
-            friends: "Invita Amigos", share: "COMPARTIR LINK",
-            faq: "<b>¿Qué es Digital Bakery?</b><br>Es una incubadora donde minas $PAN para aprender sobre inversiones.<br><b>¿Cómo gano más?</b><br>Usa el horno o compra equipos automáticos."
-        },
-        en: {
-            settings: "SETTINGS & FAQ", lang: "🌎 Language", music: "🎵 Music",
-            claim: "Claim Passive $PAN", energy: "OVEN ENERGY",
-            friends: "Invite Friends", share: "SHARE LINK",
-            faq: "<b>What is Digital Bakery?</b><br>It's an incubator where you mine $PAN to learn about investments.<br><b>How to earn more?</b><br>Use the oven or buy automatic equipment."
-        },
-        pt: {
-            settings: "AJUSTES E FAQ", lang: "🌎 Idioma", music: "🎵 Música",
-            claim: "Coletar $PAN Passivo", energy: "ENERGIA DO FORNO",
-            friends: "Convidar Amigos", share: "COMPARTILHAR LINK",
-            faq: "<b>O que é Digital Bakery?</b><br>É uma incubadora onde você mina $PAN para aprender sobre investimentos.<br><b>Como ganhar mais?</b><br>Use o forno ou compre equipamentos automáticos."
-        }
-    };
-
     let balance = 0;
     let pps = 0;
     let hornos = { casero: 0, industrial: 0, maestro: 0 };
     let energy = 1000;
     let isRecharging = false;
     let claimablePassive = 0;
-    let currentLang = 'es';
 
     function toggleModal(show) {
         document.getElementById('settings-modal').style.display = show ? 'flex' : 'none';
         tg.HapticFeedback.impactOccurred('medium');
     }
 
-    function changeLanguage() {
-        currentLang = document.getElementById('lang-selector').value;
-        const t = i18n[currentLang];
-        document.getElementById('text-settings-title').innerText = t.settings;
-        document.getElementById('text-lang-label').innerText = t.lang;
-        document.getElementById('text-music-label').innerText = t.music;
-        document.getElementById('text-claim-btn').innerText = t.claim;
-        document.getElementById('text-energy-label').innerText = t.energy;
-        document.getElementById('text-friends-title').innerText = t.friends;
-        document.getElementById('text-share-btn').innerText = t.share;
-        document.getElementById('faq-content').innerHTML = t.faq;
-        localStorage.setItem('dbakery_lang', currentLang);
-    }
-
-    function toggleMusic() {
-        const music = document.getElementById('bg-music');
-        const isChecked = document.getElementById('music-toggle').checked;
-        if(isChecked) {
-            music.play().catch(() => tg.showAlert("Toca la pantalla para activar música"));
-        } else {
-            music.pause();
-        }
-        localStorage.setItem('dbakery_music', isChecked);
-    }
-
     function load() {
-        // Cargar idioma
-        currentLang = localStorage.getItem('dbakery_lang') || 'es';
-        document.getElementById('lang-selector').value = currentLang;
-        changeLanguage();
-
-        // Cargar musica
-        const musicOn = localStorage.getItem('dbakery_music') === 'true';
-        document.getElementById('music-toggle').checked = musicOn;
-
         const savedBalance = localStorage.getItem(storageKey);
         if (savedBalance !== null) {
             balance = parseFloat(savedBalance);
@@ -315,7 +264,24 @@
             claimablePassive = parseFloat(localStorage.getItem('dbakery_claimable') || 0);
             energy = parseInt(localStorage.getItem('dbakery_energy') || 1000);
             isRecharging = localStorage.getItem('dbakery_recharging') === 'true';
-            if (isRecharging && energy < 1000) document.getElementById('mine-btn').classList.add('disabled');
+            
+            if (isRecharging && energy < 1000) {
+                document.getElementById('mine-btn').classList.add('disabled');
+            } else {
+                isRecharging = false;
+            }
+        }
+        
+        const startParam = tg.initDataUnsafe?.start_param;
+        const alreadyReferred = localStorage.getItem('dbakery_referred_done');
+
+        if (startParam && !alreadyReferred) {
+            balance += 0.000005000; 
+            localStorage.setItem('dbakery_referred_done', 'true');
+            save();
+            setTimeout(() => {
+                tg.showAlert("¡Bono de referido activado! Has recibido +0.000005000 $PAN");
+            }, 4000);
         }
     }
 
@@ -335,6 +301,7 @@
         document.getElementById('progress').style.width = '100%';
         updateUI();
         actualizarPanaderia();
+        
         setTimeout(() => {
             document.getElementById('loader').style.display = 'none';
             document.getElementById('main-content').style.display = 'flex';
@@ -355,11 +322,13 @@
         if (energy > 0 && !isRecharging) {
             balance += 0.000000001; 
             energy -= 1;
+            
             if (energy <= 0) {
                 energy = 0;
                 isRecharging = true;
                 document.getElementById('mine-btn').classList.add('disabled');
             }
+
             const touch = e.changedTouches[0];
             showPlus(touch.clientX, touch.clientY);
             updateUI();
@@ -374,8 +343,10 @@
             claimablePassive = 0;
             save();
             updateUI();
-            tg.showAlert(currentLang === 'es' ? "¡Has cobrado tus ganancias!" : "Claimed!");
+            tg.showAlert("¡Has cobrado tus ganancias pasivas!");
             tg.HapticFeedback.notificationOccurred('success');
+        } else {
+            tg.showAlert("No hay ganancias pasivas que cobrar en este momento.");
         }
     });
 
@@ -397,9 +368,11 @@
             save(); 
             updateUI();
             actualizarPanaderia();
+            tg.showAlert("¡Felicidades! El horno automático se ha activado con éxito.");
             tg.HapticFeedback.notificationOccurred('success');
         } else {
-            tg.showAlert("Saldo insuficiente / Low balance");
+            tg.showAlert("Saldo insuficiente de $PAN.");
+            tg.HapticFeedback.notificationOccurred('error');
         }
     }
 
@@ -428,14 +401,15 @@
 
     function compartir() {
         const uid = tg.initDataUnsafe?.user?.id || "admin";
-        const link = `https://t.me/DigitalBakeryGroup_BOT/app?startapp=${uid}`;
-        const text = `¡Únete a Digital Bakery! 🍞💰`;
+        const botUsername = "DigitalBakeryGroup_BOT";
+        const link = `https://t.me/${botUsername}/app?startapp=${uid}`;
+        const text = `¡Únete a Digital Bakery! Mina $PAN y construye tu imperio cripto conmigo. 🍞💰`;
         tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
     }
 
     async function pagarConWallet(monto) {
         if (!tonConnectUI.connected) {
-            tg.showAlert("Connect Wallet!");
+            tg.showAlert("Primero conecta tu Wallet TON arriba.");
             return;
         }
         const transaction = {
@@ -447,9 +421,9 @@
         };
         try {
             await tonConnectUI.sendTransaction(transaction);
-            tg.showAlert("Transacción enviada!");
+            tg.showAlert("¡Transacción enviada! Revisaremos tu inversión.");
         } catch (e) {
-            tg.showAlert("Error / Canceled");
+            tg.showAlert("La transacción fue cancelada o hubo un error.");
         }
     }
 
@@ -461,7 +435,10 @@
                 document.getElementById('mine-btn').classList.remove('disabled');
             }
         }
-        if (pps > 0) claimablePassive += pps;
+        
+        if (pps > 0) {
+            claimablePassive += pps;
+        }
         save();
         updateUI();
     }, 1000);
