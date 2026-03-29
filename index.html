@@ -35,6 +35,7 @@
             color: white; padding: 10px; border-radius: 12px; cursor: pointer; font-size: 1.2rem;
         }
 
+        /* MODAL Y TRADUCCIONES */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
@@ -50,13 +51,10 @@
         .setting-item {
             background: #fef3c7; color: #2d1b0d; margin: 10px 0; padding: 12px 15px;
             border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
-            font-weight: bold; font-size: 0.9rem;
+            font-weight: bold; font-size: 0.85rem;
         }
         
-        /* Selector de idioma */
-        .lang-select {
-            background: #fef3c7; border: none; font-weight: bold; color: #2d1b0d; outline: none;
-        }
+        .lang-select { background: transparent; border: none; font-weight: bold; color: #2d1b0d; outline: none; }
 
         .faq-box {
             text-align: left; background: rgba(254, 243, 199, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);
@@ -120,6 +118,11 @@
         .invest-price { font-size: 1.4rem; font-weight: 800; color: var(--success); display: block; margin-bottom: 5px; }
         .btn-invest { background: var(--ton); color: white; border: none; padding: 14px; width: 100%; border-radius: 16px; font-weight: 800; cursor: pointer; margin-top: 15px; }
 
+        .policy-note {
+            background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 15px; margin: 15px; padding: 15px; font-size: 0.75rem; color: #cbd5e1; line-height: 1.4;
+        }
+
         footer { 
             position: fixed; bottom: 0; width: 100%; background: rgba(15, 23, 42, 0.98); 
             padding: 18px 0; display: flex; justify-content: space-around; 
@@ -133,7 +136,7 @@
 <body>
 
 <audio id="bg-music" loop>
-    <source src="bakery-lofi.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <div id="loader">
@@ -144,20 +147,20 @@
 <div class="modal-overlay" id="settings-modal">
     <div class="modal-content">
         <div class="close-modal" onclick="toggleModal(false)">×</div>
-        <div class="modal-header" id="txt-settings-title">AJUSTES Y FAQ</div>
+        <div class="modal-header" id="text-settings-title">AJUSTES Y FAQ</div>
         
         <div class="setting-item">
-            <span>🌐 <span id="txt-lang-label">Idioma</span></span>
-            <select class="lang-select" id="lang-switcher" onchange="changeLanguage(this.value)">
+            <span id="text-lang-label">🌎 Idioma</span>
+            <select class="lang-select" id="lang-selector" onchange="changeLanguage()">
                 <option value="es">Español</option>
                 <option value="en">English</option>
-                <option value="fr">Français</option>
+                <option value="pt">Português</option>
             </select>
         </div>
 
         <div class="setting-item">
-            <span>🎵 <span id="txt-music-label">Música</span></span>
-            <input type="checkbox" id="music-toggle" onclick="toggleMusic()">
+            <span id="text-music-label">🎵 Música</span>
+            <input type="checkbox" id="music-toggle" onchange="toggleMusic()">
         </div>
         
         <div class="faq-box" id="faq-content">
@@ -173,7 +176,7 @@
 
     <div id="view-mine" class="view active">
         <header>
-            <div class="app-title" id="txt-factory-title">Crypto Factory</div>
+            <div class="app-title">Crypto Factory</div>
             <div class="balance-container" id="balance">0.000000000</div>
             <div id="pps-display" class="pps-badge">+0.000000000 $PAN / s</div>
         </header>
@@ -185,28 +188,48 @@
 
         <div style="padding: 10px 20px; text-align: center;">
             <button class="btn-buy" id="claim-btn" style="background: var(--success); width: 85%; padding: 12px; font-size: 0.9rem;">
-                <i class="fas fa-hand-holding-usd"></i> <span id="txt-claim-btn">Cobrar $PAN Pasivos</span> (<span id="claimable-val">0.000000000</span>)
+                <i class="fas fa-hand-holding-usd"></i> <span id="text-claim-btn">Cobrar $PAN Pasivos</span> (<span id="claimable-val">0.000000000</span>)
             </button>
         </div>
 
         <div style="padding: 15px; text-align: center;">
             <div style="display: flex; justify-content: space-between; width: 85%; margin: 0 auto; font-size: 0.75rem; font-weight: bold; color: #94a3b8; margin-bottom: 6px;">
-                <span id="txt-energy-label">ENERGÍA DE HORNO</span><span id="energy-text">1000/1000</span>
+                <span id="text-energy-label">ENERGÍA DE HORNO</span><span id="energy-text">1000/1000</span>
             </div>
             <div style="width: 85%; height: 7px; background: #1e293b; border-radius: 10px; margin: 0 auto; overflow: hidden;"><div id="energy-fill" style="height: 100%; background: var(--primary); width: 100%;"></div></div>
         </div>
     </div>
 
     <div id="view-shop" class="view">
-        <header><div class="app-title" id="nav-equipos">Equipos</div></header>
+        <header><div class="app-title">Upgrade Crypto Equipment</div></header>
         <div class="item-card"><div style="font-size: 2rem;">₿</div><div class="item-info"><h4>Miner Casero</h4><p>+0.000000001 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000005 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('casero', 0.000005, 0.000000001)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">Ξ</div><div class="item-info"><h4>Miner Industrial Pro</h4><p>+0.000000010 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000050 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('industrial', 0.00005, 0.000000010)">COMPRAR</button></div>
+        <div class="item-card"><div style="font-size: 2rem;">☀️</div><div class="item-info"><h4>Miner Maestro Vulcano</h4><p>+0.000000100 $PAN/s</p><div style="font-size: 0.8rem; color: var(--primary);">0.000500 $PAN</div></div><button class="btn-buy" onclick="comprarHorno('maestro', 0.0005, 0.000000100)">COMPRAR</button></div>
+    </div>
+
+    <div id="view-invest" class="view">
+        <header><div class="app-title">Crowdfunding Blockchain</div></header>
+        <div class="policy-note" id="text-invest-note">
+             <b>Información Importante:</b> Resultados variables. Capital bloqueado 3 meses.
+        </div>
+        <div class="invest-card"><span class="invest-price">1 USDT</span><div style="color: var(--success); font-weight:bold; font-size:0.8rem">Pack Semilla🌾</div><button class="btn-invest" onclick="pagarConWallet(1)">INVERTIR</button></div>
+        <div class="invest-card"><span class="invest-price">10 USDT</span><div style="color: var(--ton); font-weight:bold; font-size:0.8rem">Pack Amasadora 🥯</div><button class="btn-invest" onclick="pagarConWallet(10)">INVERTIR</button></div>
+    </div>
+
+    <div id="view-friends" class="view">
+        <header><div class="app-title">Global Cripto Network</div></header>
+        <div style="text-align:center; padding: 40px 20px; background: linear-gradient(180deg, #1e293b, #020617); border-radius: 24px; margin: 20px;">
+            <i class="fas fa-users" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h3 id="text-friends-title">Invita Amigos</h3>
+            <button class="btn-buy" onclick="compartir()" id="text-share-btn" style="background: var(--primary); margin-top: 20px; width: 80%;">COMPARTIR LINK</button>
+        </div>
     </div>
 
     <footer>
-        <div class="nav-item active" onclick="switchView('view-mine', this)"><i class="fas fa-microchip"></i><span id="nav-factory">FACTORY</span></div>
-        <div class="nav-item" onclick="switchView('view-shop', this)"><i class="fas fa-tools"></i><span id="nav-shop">EQUIPOS</span></div>
+        <div class="nav-item active" onclick="switchView('view-mine', this)"><i class="fas fa-microchip"></i>FACTORY</div>
+        <div class="nav-item" onclick="switchView('view-shop', this)"><i class="fas fa-tools"></i>EQUIPOS</div>
         <div class="nav-item" onclick="switchView('view-invest', this)"><i class="fas fa-coins"></i>USDT</div>
-        <div class="nav-item" onclick="switchView('view-friends', this)"><i class="fas fa-user-friends"></i><span id="nav-friends">AMIGOS</span></div>
+        <div class="nav-item" onclick="switchView('view-friends', this)"><i class="fas fa-user-friends"></i>AMIGOS</div>
     </footer>
 </div>
 
@@ -217,102 +240,101 @@
     // TRADUCCIONES
     const i18n = {
         es: {
-            settings: "AJUSTES Y FAQ",
-            lang: "Idioma",
-            music: "Música",
-            claim: "Cobrar $PAN Pasivos",
-            energy: "ENERGÍA DE HORNO",
-            factory: "FACTORY",
-            shop: "EQUIPOS",
-            friends: "AMIGOS",
-            faq: "<b>¿Qué es Digital Bakery?</b> Es una incubadora blockchain. <b>¿Cómo gano?</b> Minando y comprando hornos."
+            settings: "AJUSTES Y FAQ", lang: "🌎 Idioma", music: "🎵 Música",
+            claim: "Cobrar $PAN Pasivos", energy: "ENERGÍA DE HORNO",
+            friends: "Invita Amigos", share: "COMPARTIR LINK",
+            faq: "<b>¿Qué es Digital Bakery?</b><br>Es una incubadora donde minas $PAN para aprender sobre inversiones.<br><b>¿Cómo gano más?</b><br>Usa el horno o compra equipos automáticos."
         },
         en: {
-            settings: "SETTINGS & FAQ",
-            lang: "Language",
-            music: "Music",
-            claim: "Claim Passive $PAN",
-            energy: "OVEN ENERGY",
-            factory: "FACTORY",
-            shop: "EQUIPMENT",
-            friends: "FRIENDS",
-            faq: "<b>What is Digital Bakery?</b> It is a blockchain incubator. <b>How do I earn?</b> By mining and buying ovens."
+            settings: "SETTINGS & FAQ", lang: "🌎 Language", music: "🎵 Music",
+            claim: "Claim Passive $PAN", energy: "OVEN ENERGY",
+            friends: "Invite Friends", share: "SHARE LINK",
+            faq: "<b>What is Digital Bakery?</b><br>It's an incubator where you mine $PAN to learn about investments.<br><b>How to earn more?</b><br>Use the oven or buy automatic equipment."
         },
-        fr: {
-            settings: "PARAMÈTRES & FAQ",
-            lang: "Langue",
-            music: "Musique",
-            claim: "Récupérer $PAN Passif",
-            energy: "ÉNERGIE DU FOUR",
-            factory: "USINE",
-            shop: "ÉQUIPEMENT",
-            friends: "AMIS",
-            faq: "<b>Qu'est-ce que Digital Bakery ?</b> C'est un incubateur blockchain. <b>Comment gagner ?</b> En minant et en achetant des fours."
+        pt: {
+            settings: "AJUSTES E FAQ", lang: "🌎 Idioma", music: "🎵 Música",
+            claim: "Coletar $PAN Passivo", energy: "ENERGIA DO FORNO",
+            friends: "Convidar Amigos", share: "COMPARTILHAR LINK",
+            faq: "<b>O que é Digital Bakery?</b><br>É uma incubadora onde você mina $PAN para aprender sobre investimentos.<br><b>Como ganhar mais?</b><br>Use o forno ou compre equipamentos automáticos."
         }
     };
 
-    let currentLang = localStorage.getItem('db_lang') || 'es';
-
-    function changeLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem('db_lang', lang);
-        updateText();
-    }
-
-    function updateText() {
-        const t = i18n[currentLang];
-        document.getElementById('txt-settings-title').innerText = t.settings;
-        document.getElementById('txt-lang-label').innerText = t.lang;
-        document.getElementById('txt-music-label').innerText = t.music;
-        document.getElementById('txt-claim-btn').innerText = t.claim;
-        document.getElementById('txt-energy-label').innerText = t.energy;
-        document.getElementById('nav-factory').innerText = t.factory;
-        document.getElementById('nav-shop').innerText = t.shop;
-        document.getElementById('nav-friends').innerText = t.friends;
-        document.getElementById('faq-content').innerHTML = t.faq;
-    }
-
-    // AUDIO LOGIC
-    const music = document.getElementById('bg-music');
-    function toggleMusic() {
-        const isChecked = document.getElementById('music-toggle').checked;
-        if (isChecked) {
-            music.play().catch(() => {
-                tg.showAlert("Haz clic en la pantalla para activar el audio");
-            });
-        } else {
-            music.pause();
-        }
-        tg.HapticFeedback.selectionChanged();
-    }
-
-    // Resto de lógica de funcionamiento (Balance, Clicks, etc)
     let balance = 0;
     let pps = 0;
-    let energy = 1000;
     let hornos = { casero: 0, industrial: 0, maestro: 0 };
+    let energy = 1000;
+    let isRecharging = false;
     let claimablePassive = 0;
+    let currentLang = 'es';
 
     function toggleModal(show) {
         document.getElementById('settings-modal').style.display = show ? 'flex' : 'none';
         tg.HapticFeedback.impactOccurred('medium');
     }
 
-    function updateUI() {
-        document.getElementById('balance').innerText = balance.toFixed(9);
-        document.getElementById('pps-display').innerText = `+${pps.toFixed(9)} $PAN / s`;
-        document.getElementById('energy-text').innerText = `${energy}/1000`;
-        document.getElementById('energy-fill').style.width = (energy/10) + '%';
-        document.getElementById('claimable-val').innerText = claimablePassive.toFixed(9);
+    function changeLanguage() {
+        currentLang = document.getElementById('lang-selector').value;
+        const t = i18n[currentLang];
+        document.getElementById('text-settings-title').innerText = t.settings;
+        document.getElementById('text-lang-label').innerText = t.lang;
+        document.getElementById('text-music-label').innerText = t.music;
+        document.getElementById('text-claim-btn').innerText = t.claim;
+        document.getElementById('text-energy-label').innerText = t.energy;
+        document.getElementById('text-friends-title').innerText = t.friends;
+        document.getElementById('text-share-btn').innerText = t.share;
+        document.getElementById('faq-content').innerHTML = t.faq;
+        localStorage.setItem('dbakery_lang', currentLang);
     }
 
-    // Inicialización
+    function toggleMusic() {
+        const music = document.getElementById('bg-music');
+        const isChecked = document.getElementById('music-toggle').checked;
+        if(isChecked) {
+            music.play().catch(() => tg.showAlert("Toca la pantalla para activar música"));
+        } else {
+            music.pause();
+        }
+        localStorage.setItem('dbakery_music', isChecked);
+    }
+
+    function load() {
+        // Cargar idioma
+        currentLang = localStorage.getItem('dbakery_lang') || 'es';
+        document.getElementById('lang-selector').value = currentLang;
+        changeLanguage();
+
+        // Cargar musica
+        const musicOn = localStorage.getItem('dbakery_music') === 'true';
+        document.getElementById('music-toggle').checked = musicOn;
+
+        const savedBalance = localStorage.getItem(storageKey);
+        if (savedBalance !== null) {
+            balance = parseFloat(savedBalance);
+            pps = parseFloat(localStorage.getItem('dbakery_pps') || 0);
+            hornos = JSON.parse(localStorage.getItem('dbakery_inv') || '{"casero":0,"industrial":0,"maestro":0}');
+            claimablePassive = parseFloat(localStorage.getItem('dbakery_claimable') || 0);
+            energy = parseInt(localStorage.getItem('dbakery_energy') || 1000);
+            isRecharging = localStorage.getItem('dbakery_recharging') === 'true';
+            if (isRecharging && energy < 1000) document.getElementById('mine-btn').classList.add('disabled');
+        }
+    }
+
+    load();
+
+    let tonConnectUI;
+    try {
+        tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp/main/public/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect-btn'
+        });
+    } catch(e) {}
+
+    tg.expand();
+
     window.addEventListener('load', () => {
         document.getElementById('progress').style.width = '100%';
-        document.getElementById('lang-switcher').value = currentLang;
-        updateText();
         updateUI();
-        
+        actualizarPanaderia();
         setTimeout(() => {
             document.getElementById('loader').style.display = 'none';
             document.getElementById('main-content').style.display = 'flex';
@@ -330,17 +352,117 @@
 
     document.getElementById('mine-btn').addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if (energy > 0) {
+        if (energy > 0 && !isRecharging) {
             balance += 0.000000001; 
             energy -= 1;
+            if (energy <= 0) {
+                energy = 0;
+                isRecharging = true;
+                document.getElementById('mine-btn').classList.add('disabled');
+            }
+            const touch = e.changedTouches[0];
+            showPlus(touch.clientX, touch.clientY);
             updateUI();
+            save(); 
             tg.HapticFeedback.impactOccurred('light');
         }
     });
 
+    document.getElementById('claim-btn').addEventListener('click', () => {
+        if (claimablePassive > 0) {
+            balance += claimablePassive;
+            claimablePassive = 0;
+            save();
+            updateUI();
+            tg.showAlert(currentLang === 'es' ? "¡Has cobrado tus ganancias!" : "Claimed!");
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+    });
+
+    function showPlus(x, y) {
+        const p = document.createElement('div');
+        p.className = 'plus-number';
+        p.innerText = '+1';
+        p.style.left = (x - 20) + 'px';
+        p.style.top = (y - 40) + 'px';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+    }
+
+    function comprarHorno(tipo, costo, produccion) {
+        if (balance >= costo) {
+            balance -= costo;
+            hornos[tipo]++;
+            pps += produccion;
+            save(); 
+            updateUI();
+            actualizarPanaderia();
+            tg.HapticFeedback.notificationOccurred('success');
+        } else {
+            tg.showAlert("Saldo insuficiente / Low balance");
+        }
+    }
+
+    function actualizarPanaderia() {
+        if(hornos.casero > 0) document.getElementById('icon-casero').classList.add('active');
+        if(hornos.industrial > 0) document.getElementById('icon-industrial').classList.add('active');
+        if(hornos.maestro > 0) document.getElementById('icon-maestro').classList.add('active');
+    }
+
+    function updateUI() {
+        document.getElementById('balance').innerText = balance.toFixed(9);
+        document.getElementById('pps-display').innerText = `+${pps.toFixed(9)} $PAN / s`;
+        document.getElementById('energy-text').innerText = `${energy}/1000`;
+        document.getElementById('energy-fill').style.width = (energy/10) + '%';
+        document.getElementById('claimable-val').innerText = claimablePassive.toFixed(9);
+    }
+
+    function save() {
+        localStorage.setItem(storageKey, balance.toFixed(9));
+        localStorage.setItem('dbakery_pps', pps.toFixed(9));
+        localStorage.setItem('dbakery_inv', JSON.stringify(hornos));
+        localStorage.setItem('dbakery_claimable', claimablePassive.toFixed(9));
+        localStorage.setItem('dbakery_energy', energy.toString());
+        localStorage.setItem('dbakery_recharging', isRecharging.toString());
+    }
+
+    function compartir() {
+        const uid = tg.initDataUnsafe?.user?.id || "admin";
+        const link = `https://t.me/DigitalBakeryGroup_BOT/app?startapp=${uid}`;
+        const text = `¡Únete a Digital Bakery! 🍞💰`;
+        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
+    }
+
+    async function pagarConWallet(monto) {
+        if (!tonConnectUI.connected) {
+            tg.showAlert("Connect Wallet!");
+            return;
+        }
+        const transaction = {
+            validUntil: Math.floor(Date.now() / 1000) + 60,
+            messages: [{
+                address: "UQCWJafwk-4iQJkxDjqaBD4NB4cBmswgGJVENe-HyCaO2FAV",
+                amount: (monto * 1000000000).toString() 
+            }]
+        };
+        try {
+            await tonConnectUI.sendTransaction(transaction);
+            tg.showAlert("Transacción enviada!");
+        } catch (e) {
+            tg.showAlert("Error / Canceled");
+        }
+    }
+
     setInterval(() => {
-        if (energy < 1000) energy++;
+        if (energy < 1000) {
+            energy++;
+            if (isRecharging && energy >= 1000) {
+                isRecharging = false;
+                document.getElementById('mine-btn').classList.remove('disabled');
+            }
+        }
         if (pps > 0) claimablePassive += pps;
+        save();
         updateUI();
     }, 1000);
 </script>
